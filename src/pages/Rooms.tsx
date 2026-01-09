@@ -9,6 +9,7 @@ type RoomType = "suite" | "double" | "family" | "twin" | "bungalow";
 
 type Room = {
   id: number;
+  slug: string;
   title: string;
   description: string;
   price: number;
@@ -22,6 +23,7 @@ type Room = {
 const rooms: Room[] = [
   {
     id: 1,
+    slug: "suite-vue-safari",
     title: "Suite Vue Safari",
     description: "Vue panoramique sur la Ruvubu, salon privé et balcon.",
     price: 150000,
@@ -33,6 +35,7 @@ const rooms: Room[] = [
   },
   {
     id: 2,
+    slug: "chambre-double",
     title: "Chambre Double",
     description: "Confort moderne, literie premium et lumière naturelle.",
     price: 85000,
@@ -44,6 +47,7 @@ const rooms: Room[] = [
   },
   {
     id: 3,
+    slug: "chambre-familiale",
     title: "Chambre Familiale",
     description: "Deux chambres communicantes et espace salon pour la famille.",
     price: 120000,
@@ -55,6 +59,7 @@ const rooms: Room[] = [
   },
   {
     id: 4,
+    slug: "chambre-twin",
     title: "Chambre Twin",
     description: "Idéal pour collègues ou amis, lits séparés et bureau.",
     price: 75000,
@@ -66,6 +71,7 @@ const rooms: Room[] = [
   },
   {
     id: 5,
+    slug: "bungalow-groupe",
     title: "Bungalow Groupe",
     description: "Espace généreux, terrasse privée et coin repas.",
     price: 180000,
@@ -77,6 +83,7 @@ const rooms: Room[] = [
   },
   {
     id: 6,
+    slug: "chambre-double-jardin",
     title: "Chambre Double Jardin",
     description: "Accès direct aux jardins et ambiance paisible.",
     price: 65000,
@@ -297,11 +304,16 @@ export default function Rooms() {
                     <span className="font-semibold">{room.rating}</span>
                     <span className="text-muted-foreground">/5</span>
                   </div>
-                  <Button asChild variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                    <Link to="/contact">
-                      Réserver <ArrowDownCircle className="w-4 h-4 ml-2" />
-                    </Link>
-                  </Button>
+                  <div className="flex gap-3">
+                    <Button asChild variant="outline" className="flex-1 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                      <Link to="/contact">
+                        Réserver <ArrowDownCircle className="w-4 h-4 ml-2" />
+                      </Link>
+                    </Button>
+                    <Button asChild className="flex-1" variant="secondary">
+                      <Link to={`/chambres/${room.slug}`}>Voir détails</Link>
+                    </Button>
+                  </div>
                 </div>
               </div>
             ))}
