@@ -5,11 +5,12 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 const navigation = [
-  { name: 'Accueil', href: '/' },
-  { name: 'Chambres', href: '/chambres' },
-  { name: 'À Propos', href: '/a-propos' },
-  { name: 'Galerie', href: '/galerie' },
-  { name: 'Contact', href: '/contact' },
+  { name: 'Accueil', en: 'Home', href: '/' },
+  { name: 'Chambres', en: 'Rooms', href: '/chambres' },
+  { name: 'Restaurant', en: 'Dining', href: '/restaurant' },
+  { name: 'À Propos', en: 'About', href: '/a-propos' },
+  { name: 'Galerie', en: 'Gallery', href: '/galerie' },
+  { name: 'Contact', en: 'Contact', href: '/contact' },
 ];
 
 export function Header() {
@@ -61,8 +62,12 @@ export function Header() {
                     ? "text-primary after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-accent"
                     : "text-muted-foreground"
                 )}
+                title={`${item.name} / ${item.en}`}
               >
-                {item.name}
+                <div className="flex flex-col leading-tight text-left">
+                  <span>{item.name}</span>
+                  <span className="text-[11px] text-muted-foreground/80 font-normal">{item.en}</span>
+                </div>
               </Link>
             ))}
           </div>
