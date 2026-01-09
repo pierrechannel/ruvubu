@@ -36,19 +36,19 @@ const offers = [
 
 export function OffersSection() {
   return (
-    <section className="py-24 bg-gradient-to-b from-background to-secondary/20">
+    <section className="py-20">
       <div className="container mx-auto px-4">
         {/* Section title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <span className="text-sm font-semibold uppercase tracking-wider text-accent mb-3 block">
+          <span className="text-sm font-semibold uppercase tracking-wider text-accent mb-2 block">
             Offres
           </span>
-          <h2 className="font-serif text-4xl lg:text-5xl font-bold text-foreground mb-4">
+          <h2 className="font-serif text-3xl lg:text-4xl font-bold text-foreground mb-4">
             Forfaits Découverte
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -66,13 +66,13 @@ export function OffersSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className={cn(
-                "group bg-card rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 relative border border-border hover:border-accent/50",
-                offer.featured && "ring-2 ring-accent shadow-xl"
+                "group bg-card rounded-2xl overflow-hidden shadow-hotel-sm hover:shadow-hotel-lg transition-all duration-300 relative",
+                offer.featured && "ring-2 ring-accent"
               )}
             >
               {/* Badge */}
               <div className="absolute top-4 left-4 z-10">
-                <span className="bg-gradient-to-r from-primary to-primary/80 text-primary-foreground px-4 py-1.5 rounded-full text-xs font-bold shadow-lg">
+                <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
                   {offer.badge}
                 </span>
               </div>
@@ -82,33 +82,33 @@ export function OffersSection() {
                 <img
                   src={offer.image}
                   alt={offer.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
               </div>
 
               {/* Content */}
               <div className="p-6">
-                <h3 className="font-serif text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                <h3 className="font-serif text-xl font-semibold text-foreground mb-3">
                   {offer.title}
                 </h3>
-                <p className="text-muted-foreground text-sm mb-5 line-clamp-3 leading-relaxed">
+                <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
                   {offer.description}
                 </p>
 
                 {/* Details */}
-                <div className="space-y-3 mb-6">
+                <div className="space-y-2 mb-6">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Calendar className="w-4 h-4 text-accent flex-shrink-0" />
+                    <Calendar className="w-4 h-4 text-accent" />
                     <span>{offer.validity}</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Phone className="w-4 h-4 text-accent flex-shrink-0" />
+                    <Phone className="w-4 h-4 text-accent" />
                     <span>{offer.priceInfo}</span>
                   </div>
                 </div>
 
-                <Button asChild className="w-full bg-gradient-to-r from-accent to-accent/90 text-accent-foreground hover:from-accent/90 hover:to-accent shadow-lg hover:shadow-xl transition-all duration-300 font-medium">
+                <Button asChild className="w-full bg-accent text-accent-foreground hover:bg-accent/90">
                   <Link to="/contact">
                     {offer.title.includes('Mariage') ? 'Obtenir un Devis' : 'Réserver'}
                   </Link>

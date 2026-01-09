@@ -41,19 +41,19 @@ const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
 
 export function RoomsSection() {
   return (
-    <section className="py-24 bg-gradient-to-b from-background to-secondary/20">
+    <section className="py-20">
       <div className="container mx-auto px-4">
         {/* Section title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <span className="text-sm font-semibold uppercase tracking-wider text-accent mb-3 block">
+          <span className="text-sm font-semibold uppercase tracking-wider text-accent mb-2 block">
             Hébergement
           </span>
-          <h2 className="font-serif text-4xl lg:text-5xl font-bold text-foreground mb-4">
+          <h2 className="font-serif text-3xl lg:text-4xl font-bold text-foreground mb-4">
             Nos Chambres Spacieuses
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
@@ -70,50 +70,49 @@ export function RoomsSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group bg-card rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-border hover:border-accent/50"
+              className="group bg-card rounded-2xl overflow-hidden shadow-hotel-sm hover:shadow-hotel-lg transition-all duration-300"
             >
               {/* Image */}
               <div className="aspect-[4/3] overflow-hidden relative">
                 <img
                   src={room.image}
                   alt={room.name}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="absolute top-4 right-4 bg-gradient-to-br from-accent to-accent/80 text-accent-foreground px-4 py-2 rounded-xl text-sm font-bold shadow-lg backdrop-blur-sm">
+                <div className="absolute top-4 right-4 bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-semibold">
                   {room.price.toLocaleString()} BIF/nuit
                 </div>
               </div>
 
               {/* Content */}
               <div className="p-6">
-                <div className="flex items-center gap-2 text-muted-foreground text-sm mb-3">
-                  <Users className="w-4 h-4 text-primary" />
-                  <span className="font-medium">{room.capacity} personnes</span>
+                <div className="flex items-center gap-2 text-muted-foreground text-sm mb-2">
+                  <Users className="w-4 h-4" />
+                  <span>{room.capacity} personnes</span>
                 </div>
-                <h3 className="font-serif text-2xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                <h3 className="font-serif text-xl font-semibold text-foreground mb-2">
                   {room.name}
                 </h3>
-                <p className="text-muted-foreground text-sm mb-5 line-clamp-2 leading-relaxed">
+                <p className="text-muted-foreground text-sm mb-4 line-clamp-2">
                   {room.description}
                 </p>
 
                 {/* Amenities */}
-                <div className="flex flex-wrap gap-2 mb-6">
+                <div className="flex flex-wrap gap-2 mb-4">
                   {room.amenities.slice(0, 3).map((amenity) => (
                     <span
                       key={amenity}
-                      className="inline-flex items-center gap-1.5 text-xs bg-secondary/80 px-3 py-1.5 rounded-lg font-medium border border-border/50"
+                      className="inline-flex items-center gap-1 text-xs bg-secondary px-2 py-1 rounded-md"
                     >
                       {amenity}
                     </span>
                   ))}
                 </div>
 
-                <Button asChild variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-all duration-300 font-medium">
-                  <Link to="/contact" className="flex items-center justify-center gap-2">
+                <Button asChild variant="outline" className="w-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                  <Link to="/contact">
                     Réserver
-                    <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    <ArrowRight className="w-4 h-4 ml-2" />
                   </Link>
                 </Button>
               </div>
@@ -126,14 +125,14 @@ export function RoomsSection() {
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
-          className="text-center mt-16"
+          className="text-center mt-12"
         >
           <Link
             to="/chambres"
-            className="inline-flex items-center gap-2 text-primary font-semibold hover:text-accent transition-colors group"
+            className="inline-flex items-center gap-2 text-primary font-medium hover:text-accent transition-colors"
           >
             <span>Découvrir Toutes Nos Chambres</span>
-            <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+            <ArrowRight className="w-5 h-5" />
           </Link>
         </motion.div>
       </div>

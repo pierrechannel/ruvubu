@@ -48,19 +48,19 @@ const amenities = [
 
 export function AmenitiesSection() {
   return (
-    <section className="py-24 bg-gradient-to-b from-secondary/30 via-background to-secondary/20">
+    <section className="py-20 bg-secondary/30">
       <div className="container mx-auto px-4">
         {/* Section title */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-12"
         >
-          <span className="text-sm font-semibold uppercase tracking-wider text-accent mb-3 block">
+          <span className="text-sm font-semibold uppercase tracking-wider text-accent mb-2 block">
             Services
           </span>
-          <h2 className="font-serif text-4xl lg:text-5xl font-bold text-foreground mb-4">
+          <h2 className="font-serif text-3xl lg:text-4xl font-bold text-foreground mb-4">
             Nos Installations Premium
           </h2>
         </motion.div>
@@ -74,38 +74,38 @@ export function AmenitiesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
-              className="group bg-card rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 border border-border hover:border-accent/50"
+              className="group bg-card rounded-2xl overflow-hidden shadow-hotel-sm hover:shadow-hotel-lg transition-all duration-300"
             >
               {/* Image with overlay icon */}
               <div className="aspect-[4/3] overflow-hidden relative">
                 <img
                   src={amenity.image}
                   alt={amenity.title}
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-                <div className="absolute bottom-4 left-4 w-14 h-14 bg-gradient-to-br from-accent to-accent/80 rounded-xl flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-300">
-                  <amenity.icon className="w-7 h-7 text-accent-foreground" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <div className="absolute bottom-4 left-4 w-12 h-12 bg-accent rounded-xl flex items-center justify-center">
+                  <amenity.icon className="w-6 h-6 text-accent-foreground" />
                 </div>
               </div>
 
               {/* Content */}
               <div className="p-6">
-                <h4 className="font-serif text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                <h4 className="font-serif text-xl font-semibold text-foreground mb-2">
                   {amenity.title}
                 </h4>
-                <p className="text-muted-foreground text-sm mb-5 line-clamp-3 leading-relaxed">
+                <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
                   {amenity.description}
                 </p>
 
                 {/* Features */}
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-3">
                   {amenity.features.map((feature) => (
                     <span
                       key={feature}
-                      className="inline-flex items-center gap-1.5 text-xs text-primary bg-primary/10 px-3 py-1.5 rounded-lg font-medium"
+                      className="inline-flex items-center gap-1 text-xs text-primary"
                     >
-                      <CheckCircle className="w-3.5 h-3.5" />
+                      <CheckCircle className="w-3 h-3" />
                       {feature}
                     </span>
                   ))}
