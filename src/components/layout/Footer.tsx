@@ -113,8 +113,8 @@ export function Footer() {
       <div className="border-t border-primary-foreground/10">
         <div className="container mx-auto px-4 py-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-primary-foreground/60">
-            <p>© 2024 Hôtel Ruvubu. Tous droits réservés.</p>
-            <p>Conçu avec ❤️ au Burundi</p>
+            <p>© 2026 Hôtel Ruvubu. Tous droits réservés.</p>
+            <p>Conçu par <a href=''>Npc</a></p>
           </div>
         </div>
       </div>

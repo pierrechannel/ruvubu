@@ -29,7 +29,7 @@ export function Header() {
             </a>
             <a href="mailto:info@hotelruvubu.com" className="flex items-center gap-2 hover:text-accent transition-colors">
               <Mail className="w-4 h-4" />
-              <span>info@hotelruvubu.com</span>
+              <span>info@hotel-ruvubu.com</span>
             </a>
           </div>
           <p className="text-primary-foreground/80">Bienvenue à Buhumuza, Cankuzo</p>
@@ -62,11 +62,11 @@ export function Header() {
                     ? "text-primary after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-accent"
                     : "text-muted-foreground"
                 )}
-                title={`${item.name} / ${item.en}`}
+                title={`${item.name} `}
               >
                 <div className="flex flex-col leading-tight text-left">
                   <span>{item.name}</span>
-                  <span className="text-[11px] text-muted-foreground/80 font-normal">{item.en}</span>
+                  {/* <span className="text-[11px] text-muted-foreground/80 font-normal">{item.en}</span> */}
                 </div>
               </Link>
             ))}
