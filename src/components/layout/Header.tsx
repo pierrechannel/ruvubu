@@ -3,27 +3,26 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, Phone, Mail, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const navigation = [
-  { name: 'Accueil', en: 'Home', href: '/' },
-  { name: 'Chambres', en: 'Rooms', href: '/chambres' },
-  { name: 'Restaurant', en: 'Dining', href: '/restaurant' },
-  { name: 'À Propos', en: 'About', href: '/a-propos' },
-  { name: 'Galerie', en: 'Gallery', href: '/galerie' },
-  { name: 'Contact', en: 'Contact', href: '/contact' },
+  { key: 'home', href: '/' },
+  { key: 'rooms', href: '/chambres' },
+  { key: 'dining', href: '/restaurant' },
+  { key: 'about', href: '/a-propos' },
+  { key: 'gallery', href: '/galerie' },
+  { key: 'contact', href: '/contact' },
 ];
 
 export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState('fr');
+  const { language, setLanguage, t } = useLanguage();
   const location = useLocation();
 
-  const handleLanguageChange = (lang) => {
-    setCurrentLanguage(lang);
+  const handleLanguageChange = (lang: 'fr' | 'en') => {
+    setLanguage(lang);
     setLanguageDropdownOpen(false);
-    // Add your language switching logic here
-    // For example: localStorage.setItem('preferredLanguage', lang);
   };
 
   return (
@@ -77,8 +76,8 @@ export function Header() {
               <span className="text-primary-foreground font-serif text-xl font-bold">HR</span>
             </div>
             <div className="hidden sm:block">
-              <h1 className="font-serif text-xl font-bold text-foreground">Hôtel Ruvubu</h1>
-              <p className="text-xs text-muted-foreground">Buhumuza, Cankuzo</p>
+              <h1 className="font-serif text-xl font-bold text-foreground">{t('hotel_ruvubu')}</h1>
+              <p className="text-xs text-muted-foreground">{t('buhumuza_cankuzo')}</p>
             </div>
           </Link>
 
@@ -86,7 +85,7 @@ export function Header() {
           <div className="hidden lg:flex items-center gap-8">
             {navigation.map((item) => (
               <Link
-                key={item.name}
+                key={item.key}
                 to={item.href}
                 className={cn(
                   "text-sm font-medium transition-colors hover:text-primary relative py-2",
@@ -95,7 +94,7 @@ export function Header() {
                     : "text-muted-foreground"
                 )}
               >
-                {item.name}
+                {t(item.key)}
               </Link>
             ))}
             
@@ -108,7 +107,7 @@ export function Header() {
                 <svg className="w-4 h-4" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path fillRule="evenodd" clipRule="evenodd" d="M4 0H6V2H10V4H8.86807C8.57073 5.66996 7.78574 7.17117 6.6656 8.35112C7.46567 8.73941 8.35737 8.96842 9.29948 8.99697L10.2735 6H12.7265L15.9765 16H13.8735L13.2235 14H9.77647L9.12647 16H7.0235L8.66176 10.9592C7.32639 10.8285 6.08165 10.3888 4.99999 9.71246C3.69496 10.5284 2.15255 11 0.5 11H0V9H0.5C1.5161 9 2.47775 8.76685 3.33437 8.35112C2.68381 7.66582 2.14629 6.87215 1.75171 6H4.02179C4.30023 6.43491 4.62904 6.83446 4.99999 7.19044C5.88743 6.33881 6.53369 5.23777 6.82607 4H0V2H4V0ZM12.5735 12L11.5 8.69688L10.4265 12H12.5735Z" fill="currentColor"/>
                 </svg>
-                <span>{currentLanguage === 'fr' ? 'Français' : 'English'}</span>
+                <span>{language === 'fr' ? 'Français' : 'English'}</span>
                 <ChevronDown className="w-4 h-4" />
               </button>
               {languageDropdownOpen && (
@@ -133,7 +132,7 @@ export function Header() {
           {/* CTA Button */}
           <div className="hidden lg:block">
             <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90">
-              <Link to="/contact">Réserver</Link>
+              <Link to="/contact">{t('book_now')}</Link>
             </Button>
           </div>
 
@@ -157,7 +156,7 @@ export function Header() {
             <div className="flex flex-col gap-4">
               {navigation.map((item) => (
                 <Link
-                  key={item.name}
+                  key={item.key}
                   to={item.href}
                   onClick={() => setMobileMenuOpen(false)}
                   className={cn(
@@ -167,7 +166,7 @@ export function Header() {
                       : "text-muted-foreground"
                   )}
                 >
-                  {item.name}
+                  {t(item.key)}
                 </Link>
               ))}
               
@@ -177,7 +176,7 @@ export function Header() {
                   onClick={() => handleLanguageChange('fr')}
                   className={cn(
                     "flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors",
-                    currentLanguage === 'fr'
+                    language === 'fr'
                       ? "bg-primary text-primary-foreground"
                       : "bg-secondary text-muted-foreground hover:text-primary"
                   )}
@@ -188,7 +187,7 @@ export function Header() {
                   onClick={() => handleLanguageChange('en')}
                   className={cn(
                     "flex-1 px-4 py-2 rounded-md text-sm font-medium transition-colors",
-                    currentLanguage === 'en'
+                    language === 'en'
                       ? "bg-primary text-primary-foreground"
                       : "bg-secondary text-muted-foreground hover:text-primary"
                   )}
@@ -199,7 +198,7 @@ export function Header() {
               
               <Button asChild className="bg-accent text-accent-foreground hover:bg-accent/90 mt-2">
                 <Link to="/contact" onClick={() => setMobileMenuOpen(false)}>
-                  Réserver Maintenant
+                  {t('book_now_mobile')}
                 </Link>
               </Button>
             </div>
