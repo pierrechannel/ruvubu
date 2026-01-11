@@ -55,7 +55,7 @@ export function GallerySection() {
     try {
       setLoading(true);
       // Try to fetch from API - adjust the endpoint as needed
-      const response = await fetch('https://ruvubu-hotel.com/api/gallery-items');
+      const response = await fetch('https://ruvubu-hotel.com/api/api/gallery-items');
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
