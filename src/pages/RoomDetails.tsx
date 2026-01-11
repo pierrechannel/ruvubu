@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
@@ -15,9 +15,11 @@ import {
   Phone,
   Mail,
   Link2,
+  Loader2,
 } from "lucide-react";
 
 type RoomDetail = {
+  id: number;
   slug: string;
   name: string;
   type: string;
@@ -33,92 +35,29 @@ type RoomDetail = {
   tags: string[];
   images: string[];
   features: { name: string; value?: string }[];
+  price: number;
+  formatted_price: string;
 };
 
-const rooms: RoomDetail[] = [
-  {
-    slug: "suite-vue-safari",
-    name: "Suite Vue Safari",
-    type: "Suite",
-    description: "Vue panoramique sur la Ruvubu, salon privé, balcon et lumière naturelle pour profiter du paysage.",
-    rating: 4.8,
-    reviewCount: 86,
-    maxGuests: 2,
-    size: 42,
-    bed: "1 King",
-    view: "safari",
-    isFeatured: true,
-    isAvailable: true,
-    tags: ["Vue Safari", "Couples", "Balcon"],
-    images: [
-      "https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=1200&h=800&fit=crop",
-      "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&h=800&fit=crop",
-      "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=1200&h=800&fit=crop",
-    ],
-    features: [
-      { name: "Climatisation" },
-      { name: "WiFi Haut Débit" },
-      { name: "Mini-bar" },
-      { name: "Coffre-fort" },
-      { name: "Room Service" },
-      { name: "Bureau de travail" },
-    ],
-  },
-  {
-    slug: "suite-familiale",
-    name: "Suite Familiale",
-    type: "Suite",
-    description: "Deux chambres communicantes et un salon pour accueillir toute la famille avec confort.",
-    rating: 4.7,
-    reviewCount: 64,
-    maxGuests: 4,
-    size: 55,
-    bed: "2 Queen",
-    view: "garden",
-    isAvailable: true,
-    tags: ["Familles", "Salon", "Vue Jardin"],
-    images: [
-      "https://images.unsplash.com/photo-1582719478171-2f2df3229b3d?w=1200&h=800&fit=crop",
-      "https://images.unsplash.com/photo-1551884170-09fb70a3a2ed?w=1200&h=800&fit=crop",
-      "https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1200&h=800&fit=crop",
-    ],
-    features: [
-      { name: "Climatisation" },
-      { name: "WiFi Haut Débit" },
-      { name: "Coin salon" },
-      { name: "Kitchenette" },
-      { name: "Salle de bain privée" },
-      { name: "Télévision" },
-    ],
-  },
-  {
-    slug: "bungalow-groupe",
-    name: "Bungalow Groupe",
-    type: "Bungalow",
-    description: "Grand espace avec terrasse privée, idéal pour groupes et séjours prolongés.",
-    rating: 4.9,
-    reviewCount: 41,
-    maxGuests: 6,
-    size: 68,
-    bed: "3 Queen",
-    view: "garden",
-    isAvailable: false,
-    tags: ["Groupes", "Terrasse", "Vue Jardin"],
-    images: [
-      "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=1200&h=800&fit=crop",
-      "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1200&h=800&fit=crop",
-      "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?w=1200&h=800&fit=crop",
-    ],
-    features: [
-      { name: "Climatisation" },
-      { name: "Terrasse privée" },
-      { name: "Espace repas" },
-      { name: "Transferts disponibles" },
-      { name: "WiFi" },
-      { name: "Paniers-repas" },
-    ],
-  },
-];
+type ApiRoomDetail = {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  price: string;
+  formatted_price: string;
+  max_guests: number;
+  size: string;
+  view_type: string;
+  room_type: string;
+  rating: string;
+  review_count: number;
+  is_featured: boolean;
+  primary_image: string;
+  tags: { name: string; type: string }[];
+  amenities?: { name: string; icon?: string }[];
+  images?: string[];
+};
 
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
@@ -129,16 +68,122 @@ const fadeUp = {
 export default function RoomDetails() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  
+  const [room, setRoom] = useState<RoomDetail | null>(null);
+  const [similarRooms, setSimilarRooms] = useState<RoomDetail[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const room = rooms.find((r) => r.slug === slug) ?? rooms[0];
+  useEffect(() => {
+    if (!slug) {
+      navigate("/chambres");
+      return;
+    }
 
-  const similar = useMemo(
-    () => rooms.filter((r) => r.slug !== room.slug && r.type === room.type).slice(0, 3),
-    [room.slug, room.type]
-  );
+    const fetchRoomDetails = async () => {
+      try {
+        setLoading(true);
+        
+        // Fetch specific room by slug
+        const roomResponse = await fetch(`https://ruvubu-hotel.com/api/rooms/${slug}`);
+        if (!roomResponse.ok) throw new Error("Room not found");
+        const roomData = await roomResponse.json();
+        
+        // Transform room data
+        const transformedRoom: RoomDetail = {
+          id: roomData.id,
+          slug: roomData.slug,
+          name: roomData.name,
+          type: roomData.room_type === "suite" ? "Suite" : roomData.room_type === "standard" ? "Standard" : "Bungalow",
+          description: roomData.description === "undefined" ? "Chambre confortable avec toutes les commodités nécessaires pour un séjour agréable." : roomData.description,
+          rating: parseFloat(roomData.rating) || 0,
+          reviewCount: roomData.review_count || 0,
+          maxGuests: roomData.max_guests,
+          size: parseFloat(roomData.size),
+          bed: roomData.room_type === "suite" ? "1 King" : "1 Queen",
+          view: roomData.view_type as "safari" | "garden" | "city",
+          isFeatured: roomData.is_featured,
+          isAvailable: true,
+          tags: roomData.tags?.map((tag: any) => tag.name) || [],
+          images: roomData.images && roomData.images.length > 0 
+            ? roomData.images.map((img: string) => `https://ruvubu-hotel.com${img}`)
+            : [`https://ruvubu-hotel.com${roomData.primary_image}`],
+          features: roomData.amenities?.map((amenity: any) => ({ name: amenity.name })) || [
+            { name: "Climatisation" },
+            { name: "WiFi Haut Débit" },
+            { name: "Salle de bain privée" },
+            { name: "Télévision" },
+          ],
+          price: parseFloat(roomData.price),
+          formatted_price: roomData.formatted_price,
+        };
 
-  if (!slug) {
-    navigate("/chambres");
+        setRoom(transformedRoom);
+
+        // Fetch all rooms for similar recommendations
+        const allRoomsResponse = await fetch("https://ruvubu-hotel.com/api/rooms");
+        if (allRoomsResponse.ok) {
+          const allRoomsData = await allRoomsResponse.json();
+          const similar = allRoomsData.rooms
+            .filter((r: any) => r.slug !== slug && r.room_type === roomData.room_type)
+            .slice(0, 3)
+            .map((r: any) => ({
+              id: r.id,
+              slug: r.slug,
+              name: r.name,
+              type: r.room_type === "suite" ? "Suite" : r.room_type === "standard" ? "Standard" : "Bungalow",
+              description: r.description === "undefined" ? "Chambre confortable." : r.description,
+              rating: parseFloat(r.rating) || 0,
+              reviewCount: r.review_count || 0,
+              maxGuests: r.max_guests,
+              size: parseFloat(r.size),
+              bed: "1 Queen",
+              view: r.view_type,
+              tags: r.tags?.map((tag: any) => tag.name) || [],
+              images: [`https://ruvubu-hotel.com${r.primary_image}`],
+              features: [],
+              price: parseFloat(r.price),
+              formatted_price: r.formatted_price,
+            }));
+          setSimilarRooms(similar);
+        }
+
+        setError(null);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "Une erreur est survenue");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRoomDetails();
+  }, [slug, navigate]);
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex flex-col items-center justify-center py-32">
+          <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
+          <p className="text-muted-foreground">Chargement de la chambre...</p>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error || !room) {
+    return (
+      <Layout>
+        <div className="container mx-auto px-4 py-20">
+          <div className="text-center bg-destructive/10 border border-destructive/30 rounded-2xl p-8 max-w-md mx-auto">
+            <h4 className="font-serif text-xl font-semibold text-destructive mb-2">Chambre introuvable</h4>
+            <p className="text-muted-foreground mb-4">{error || "Cette chambre n'existe pas."}</p>
+            <Button asChild>
+              <Link to="/chambres">Retour aux chambres</Link>
+            </Button>
+          </div>
+        </div>
+      </Layout>
+    );
   }
 
   return (
@@ -157,11 +202,18 @@ export default function RoomDetails() {
             <div>
               <h1 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-2">{room.name}</h1>
               <div className="flex items-center gap-3 flex-wrap text-sm text-muted-foreground">
-                <div className="flex items-center gap-1">
-                  <Star className="w-4 h-4 fill-accent text-accent" />
-                  <span className="font-semibold text-foreground">{room.rating.toFixed(1)}</span>
-                  <span className="text-muted-foreground">({room.reviewCount} avis)</span>
-                </div>
+                {room.rating > 0 ? (
+                  <div className="flex items-center gap-1">
+                    <Star className="w-4 h-4 fill-accent text-accent" />
+                    <span className="font-semibold text-foreground">{room.rating.toFixed(1)}</span>
+                    <span className="text-muted-foreground">({room.reviewCount} avis)</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1">
+                    <Star className="w-4 h-4 text-muted-foreground" />
+                    <span className="text-muted-foreground">Pas encore d'avis</span>
+                  </div>
+                )}
                 <span className="px-2 py-1 rounded-full text-xs bg-primary/10 text-primary">{room.type}</span>
                 {room.isFeatured && (
                   <span className="px-2 py-1 rounded-full text-xs bg-accent text-accent-foreground flex items-center gap-1">
@@ -171,9 +223,9 @@ export default function RoomDetails() {
               </div>
             </div>
             <div className="text-right">
-              <p className="text-muted-foreground text-sm">Disponible</p>
-              <p className="text-primary text-xl font-semibold">Sur demande</p>
-              <p className="text-xs text-muted-foreground">Contactez-nous pour les tarifs</p>
+              <p className="text-muted-foreground text-sm">À partir de</p>
+              <p className="text-primary text-xl font-semibold">{room.formatted_price}</p>
+              <p className="text-xs text-muted-foreground">Par nuit</p>
             </div>
           </div>
         </div>
@@ -207,13 +259,15 @@ export default function RoomDetails() {
             </motion.div>
 
             {/* Gallery */}
-            <motion.div {...fadeUp} className="grid sm:grid-cols-3 gap-3">
-              {room.images.slice(1).map((img, idx) => (
-                <div key={img + idx} className="rounded-xl overflow-hidden aspect-[4/3] shadow-hotel-sm">
-                  <img src={img} alt={`${room.name} ${idx + 2}`} className="w-full h-full object-cover" loading="lazy" />
-                </div>
-              ))}
-            </motion.div>
+            {room.images.length > 1 && (
+              <motion.div {...fadeUp} className="grid sm:grid-cols-3 gap-3">
+                {room.images.slice(1, 4).map((img, idx) => (
+                  <div key={img + idx} className="rounded-xl overflow-hidden aspect-[4/3] shadow-hotel-sm">
+                    <img src={img} alt={`${room.name} ${idx + 2}`} className="w-full h-full object-cover" loading="lazy" />
+                  </div>
+                ))}
+              </motion.div>
+            )}
 
             {/* Description and features */}
             <motion.div {...fadeUp} className="bg-card border border-border rounded-2xl shadow-hotel-sm p-6">
@@ -241,7 +295,7 @@ export default function RoomDetails() {
                 </div>
                 <div>
                   <h6 className="text-sm font-semibold text-foreground mb-2">Caractéristiques</h6>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <div className="grid grid-cols-1 gap-2">
                     {room.features.map((feat) => (
                       <div key={feat.name} className="flex items-center gap-2 text-sm text-muted-foreground bg-secondary/40 border border-border rounded-lg px-3 py-2">
                         <CheckCircle2 className="w-4 h-4 text-accent" />
@@ -269,11 +323,11 @@ export default function RoomDetails() {
             )}
 
             {/* Similar rooms */}
-            {similar.length > 0 && (
+            {similarRooms.length > 0 && (
               <motion.div {...fadeUp} className="space-y-4">
                 <h3 className="font-serif text-2xl font-semibold text-foreground">Chambres similaires</h3>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {similar.map((sim) => (
+                  {similarRooms.map((sim) => (
                     <div key={sim.slug} className="bg-card border border-border rounded-xl overflow-hidden shadow-hotel-sm">
                       <div className="aspect-[4/3] overflow-hidden">
                         <img src={sim.images[0]} alt={sim.name} className="w-full h-full object-cover" loading="lazy" />
@@ -281,10 +335,14 @@ export default function RoomDetails() {
                       <div className="p-4 space-y-2">
                         <h4 className="font-semibold text-foreground text-sm line-clamp-2">{sim.name}</h4>
                         <p className="text-xs text-muted-foreground line-clamp-2">{sim.description}</p>
-                        <div className="flex items-center gap-1 text-xs text-accent">
-                          <Star className="w-3.5 h-3.5 fill-accent" />
-                          <span className="font-semibold">{sim.rating.toFixed(1)}</span>
-                        </div>
+                        {sim.rating > 0 ? (
+                          <div className="flex items-center gap-1 text-xs text-accent">
+                            <Star className="w-3.5 h-3.5 fill-accent" />
+                            <span className="font-semibold">{sim.rating.toFixed(1)}</span>
+                          </div>
+                        ) : (
+                          <div className="text-xs text-muted-foreground">Pas d'avis</div>
+                        )}
                         <Button asChild variant="outline" className="w-full text-xs">
                           <Link to={`/chambres/${sim.slug}`}>Voir</Link>
                         </Button>
@@ -324,12 +382,14 @@ export default function RoomDetails() {
                     </select>
                   </div>
                   <div className="rounded-lg border border-border bg-secondary/40 p-3 text-sm text-muted-foreground">
-                    Tarifs disponibles sur demande. Contactez-nous pour un devis personnalisé.
+                    Prix: <strong className="text-foreground">{room.formatted_price}</strong> par nuit
                   </div>
                 </div>
-                <Button className="w-full">
-                  <CalendarCheck className="w-4 h-4 mr-2" />
-                  Demander un devis
+                <Button asChild className="w-full">
+                  <Link to="/contact">
+                    <CalendarCheck className="w-4 h-4 mr-2" />
+                    Réserver maintenant
+                  </Link>
                 </Button>
                 <div className="text-center text-xs text-muted-foreground">
                   <span className="block"><Link2 className="w-3.5 h-3.5 inline mr-1" /> Réservation sécurisée</span>
@@ -357,7 +417,6 @@ export default function RoomDetails() {
                 <Mail className="w-4 h-4 text-primary" />
                 <span>reservations@ruvubuhotel.com</span>
               </div>
-              <div className="text-xs text-muted-foreground">Tarifs sur demande</div>
             </div>
           </motion.div>
         </div>
