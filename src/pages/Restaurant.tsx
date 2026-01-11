@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { CheckCircle2, UtensilsCrossed, Wine, Loader2 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type MenuCategory = "all" | "burundian" | "international";
 
@@ -54,11 +55,6 @@ const fadeUp = {
   viewport: { once: true },
 };
 
-const categoryTranslations: Record<string, string> = {
-  burundian: "Burundais",
-  international: "International",
-};
-
 export default function Restaurant() {
   const [filter, setFilter] = useState<MenuCategory>("all");
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
@@ -68,6 +64,8 @@ export default function Restaurant() {
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+  
+  const { language, t } = useLanguage();
 
   const fetchMenuItems = async (page: number = 1) => {
     try {
@@ -88,7 +86,7 @@ export default function Restaurant() {
         throw new Error("Failed to fetch menu items");
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load menu");
+      setError(err instanceof Error ? err.message : t('error'));
       console.error("Error fetching menu items:", err);
     } finally {
       setLoading(false);
@@ -124,17 +122,17 @@ export default function Restaurant() {
   }, []);
 
   const filterLabels = useMemo(() => {
-    const labels = [{ value: "all" as MenuCategory, label: "Tout" }];
+    const labels = [{ value: "all" as MenuCategory, label: t('all') }];
     
     categories.forEach(category => {
       labels.push({
         value: category as MenuCategory,
-        label: categoryTranslations[category] || category
+        label: t(category) || category
       });
     });
     
     return labels;
-  }, [categories]);
+  }, [categories, language]);
 
   const visibleItems = useMemo(() => {
     if (filter === "all") return menuItems;
@@ -145,7 +143,8 @@ export default function Restaurant() {
     const numericPrice = parseFloat(price);
     if (isNaN(numericPrice)) return price;
     
-    return `${numericPrice.toLocaleString('fr-FR')} FBu`;
+    const locale = language === 'fr' ? 'fr-FR' : 'en-US';
+    return `${numericPrice.toLocaleString(locale)} FBu`;
   };
 
   const getImageUrl = (imagePath: string) => {
@@ -167,10 +166,10 @@ export default function Restaurant() {
     return (
       <Layout>
         <div className="container mx-auto px-4 py-16 text-center">
-          <h2 className="text-2xl font-bold text-red-600 mb-4">Error</h2>
+          <h2 className="text-2xl font-bold text-red-600 mb-4">{t('error')}</h2>
           <p className="text-muted-foreground">{error}</p>
           <Button onClick={() => fetchMenuItems()} className="mt-4">
-            Retry
+            {t('retry')}
           </Button>
         </div>
       </Layout>
@@ -183,13 +182,19 @@ export default function Restaurant() {
       <section className="bg-secondary/30 py-10 border-b border-border/60">
         <div className="container mx-auto px-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-accent font-semibold mb-2">Restaurant & Bar</p>
-            <h1 className="font-serif text-3xl md:text-4xl font-bold text-foreground">Restaurant & Bar</h1>
+            <p className="text-xs uppercase tracking-[0.18em] text-accent font-semibold mb-2">
+              {t('restaurant_bar')}
+            </p>
+            <h1 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
+              {t('restaurant_bar')}
+            </h1>
           </div>
           <nav className="text-sm text-muted-foreground flex items-center gap-2">
-            <Link to="/" className="hover:text-primary transition-colors">Accueil</Link>
+            <Link to="/" className="hover:text-primary transition-colors">
+              {t('home')}
+            </Link>
             <span className="text-border">/</span>
-            <span className="text-foreground">Restaurant</span>
+            <span className="text-foreground">{t('dining')}</span>
           </nav>
         </div>
       </section>
@@ -198,27 +203,29 @@ export default function Restaurant() {
       <section className="py-16">
         <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
           <motion.div {...fadeUp} className="space-y-5">
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">Restauration à Buhumuza</h2>
+            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
+              {t('dining_at_buhumuza')}
+            </h2>
             <p className="text-muted-foreground leading-relaxed">
-              Cuisine burundaise authentique et spécialités internationales, préparées avec des produits sélectionnés. Bar lounge moderne, boissons maison et paniers-repas sur demande.
+              {t('dining_description')}
             </p>
             <div className="space-y-2 text-sm text-foreground">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-accent" />
-                <span>Cuisine locale et internationale</span>
+                <span>{t('local_international_cuisine')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-accent" />
-                <span>Bar lounge & limonades artisanales</span>
+                <span>{t('lounge_bar_lemonades')}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-4 h-4 text-accent" />
-                <span>Paniers-repas pour vos excursions</span>
+                <span>{t('picnic_baskets')}</span>
               </div>
             </div>
             <div className="p-4 bg-secondary/40 border border-border rounded-xl">
               <small className="text-muted-foreground italic">
-                « Une cuisine adaptée à tous les goûts. »
+                "{t('cuisine_quote')}"
               </small>
             </div>
           </motion.div>
@@ -227,7 +234,7 @@ export default function Restaurant() {
             <div className="rounded-2xl overflow-hidden bg-muted aspect-[4/3]">
               <img
                 src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=400&fit=crop"
-                alt="Restaurant Hôtel Ruvubu"
+                alt="Ruvubu Hotel Restaurant"
                 className="w-full h-full object-cover"
                 loading="lazy"
               />
@@ -235,7 +242,7 @@ export default function Restaurant() {
             <div className="rounded-2xl overflow-hidden bg-muted aspect-[4/3]">
               <img
                 src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=600&h=400&fit=crop"
-                alt="Bar Hôtel Ruvubu"
+                alt="Ruvubu Hotel Bar"
                 className="w-full h-full object-cover"
                 loading="lazy"
               />
@@ -243,7 +250,7 @@ export default function Restaurant() {
             <div className="col-span-2 rounded-2xl overflow-hidden bg-muted aspect-[5/2]">
               <img
                 src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=900&h=400&fit=crop"
-                alt="Salle Restaurant Hôtel Ruvubu"
+                alt="Ruvubu Hotel Dining Room"
                 className="w-full h-full object-cover"
                 loading="lazy"
               />
@@ -256,8 +263,10 @@ export default function Restaurant() {
       <section className="py-16 bg-secondary/30">
         <div className="container mx-auto px-4 space-y-10">
           <motion.div {...fadeUp} className="text-center space-y-2">
-            <h3 className="font-serif text-3xl font-bold text-foreground">Notre Carte</h3>
-            <p className="text-muted-foreground">Sélectionnez une catégorie pour explorer nos saveurs</p>
+            <h3 className="font-serif text-3xl font-bold text-foreground">
+              {t('our_menu')}
+            </h3>
+            <p className="text-muted-foreground">{t('select_category')}</p>
           </motion.div>
 
           <motion.div {...fadeUp} className="flex flex-wrap justify-center gap-3">
@@ -288,10 +297,11 @@ export default function Restaurant() {
           {loading ? (
             <div className="flex justify-center items-center py-20">
               <Loader2 className="w-8 h-8 animate-spin text-accent" />
+              <span className="ml-2">{t('loading')}</span>
             </div>
           ) : visibleItems.length === 0 ? (
             <div className="text-center py-10">
-              <p className="text-muted-foreground">Aucun élément de menu disponible pour cette catégorie.</p>
+              <p className="text-muted-foreground">{t('no_items')}</p>
             </div>
           ) : (
             <>
@@ -315,7 +325,6 @@ export default function Restaurant() {
                         className="w-full h-full object-cover"
                         loading="lazy"
                         onError={(e) => {
-                          // Fallback image if the original fails to load
                           e.currentTarget.src = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop";
                         }}
                       />
@@ -332,15 +341,15 @@ export default function Restaurant() {
                     <div className="p-5 space-y-2">
                       <h4 className="font-serif text-xl font-semibold text-foreground">{item.name}</h4>
                       <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                        {item.description === "undefined" ? "Délicieuse spécialité maison" : item.description}
+                        {item.description === "undefined" ? t('cuisine_quote') : item.description}
                       </p>
                       <div className="flex items-center justify-between pt-2">
                         <span className="text-xs px-2 py-1 rounded-full bg-secondary text-secondary-foreground">
-                          {categoryTranslations[item.category] || item.category}
+                          {t(item.category) || item.category}
                         </span>
                         {item.is_special && (
                           <span className="text-xs px-2 py-1 rounded-full bg-yellow-100 text-yellow-800">
-                            Spécial
+                            {t('special')}
                           </span>
                         )}
                       </div>
@@ -358,10 +367,10 @@ export default function Restaurant() {
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
                   >
-                    Précédent
+                    {t('previous')}
                   </Button>
                   <span className="text-sm text-muted-foreground">
-                    Page {currentPage} sur {totalPages}
+                    {t('page_of', { current: currentPage, total: totalPages })}
                   </span>
                   <Button
                     variant="outline"
@@ -369,7 +378,7 @@ export default function Restaurant() {
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
                   >
-                    Suivant
+                    {t('next')}
                   </Button>
                 </motion.div>
               )}
@@ -383,22 +392,24 @@ export default function Restaurant() {
         <div className="container mx-auto px-4">
           <div className="rounded-2xl border border-border bg-card shadow-hotel-md p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="space-y-2">
-              <h3 className="font-serif text-2xl font-bold text-foreground">Envie de fraîcheur après vos visites ?</h3>
+              <h3 className="font-serif text-2xl font-bold text-foreground">
+                {t('thirsty_after_visits')}
+              </h3>
               <p className="text-muted-foreground">
-                Découvrez notre bar moderne et nos limonades artisanales après Muyaga, Mishiha ou le Parc Ruvubu.
+                {t('bar_description')}
               </p>
             </div>
             <div className="flex gap-3 flex-wrap">
               <Button asChild>
                 <Link to="/contact" className="inline-flex items-center gap-2">
                   <UtensilsCrossed className="w-4 h-4" />
-                  Réserver une Table
+                  {t('book_table')}
                 </Link>
               </Button>
               <Button asChild variant="outline">
                 <Link to="/galerie" className="inline-flex items-center gap-2">
                   <Wine className="w-4 h-4" />
-                  Voir le Bar
+                  {t('view_bar')}
                 </Link>
               </Button>
             </div>
