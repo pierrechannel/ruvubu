@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowDownCircle, BedDouble, Users, Star, Square, Loader2 } from "lucide-react";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type RoomType = "suite" | "standard" | "family" | "twin" | "bungalow";
 
@@ -48,20 +49,22 @@ export default function Rooms() {
   const [type, setType] = useState<RoomType | "all">("all");
   const [sort, setSort] = useState<SortFilter>("popular");
   const [visible, setVisible] = useState(6);
+  
+  const { t } = useLanguage();
 
   useEffect(() => {
     const fetchRooms = async () => {
       try {
         setLoading(true);
         const response = await fetch("https://ruvubu-hotel.com/api/rooms");
-        if (!response.ok) throw new Error("Failed to fetch rooms");
+        if (!response.ok) throw new Error(t('fetch_error'));
         const data = await response.json();
         
         const transformedRooms: Room[] = data.rooms.map((room: ApiRoom) => ({
           id: room.id,
           slug: room.slug,
           title: room.name,
-          description: room.description === "undefined" ? "Chambre confortable avec toutes les commodités nécessaires." : room.description,
+          description: room.description === "undefined" ? t('default_room_description') : room.description,
           price: parseFloat(room.price),
           guests: room.max_guests,
           type: room.room_type as RoomType,
@@ -74,7 +77,7 @@ export default function Rooms() {
         setRooms(transformedRooms);
         setError(null);
       } catch (err) {
-        setError(err instanceof Error ? err.message : "Une erreur est survenue");
+        setError(err instanceof Error ? err.message : t('generic_error'));
       } finally {
         setLoading(false);
       }
@@ -145,19 +148,29 @@ export default function Rooms() {
   const visibleRooms = filtered.slice(0, visible);
   const hasMore = visible < filtered.length;
 
+  const formatPrice = (price: number) => {
+    return price.toLocaleString(t('locale') === 'fr' ? 'fr-FR' : 'en-US') + ' FBu';
+  };
+
   return (
     <Layout>
       {/* Page title / breadcrumb */}
       <section className="bg-secondary/30 py-10 border-b border-border/60">
         <div className="container mx-auto px-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
-            <p className="text-xs uppercase tracking-[0.18em] text-accent font-semibold mb-2">Chambres</p>
-            <h1 className="font-serif text-3xl md:text-4xl font-bold text-foreground">Votre Base Confortable</h1>
+            <p className="text-xs uppercase tracking-[0.18em] text-accent font-semibold mb-2">
+              {t('rooms')}
+            </p>
+            <h1 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
+              {t('your_comfortable_base')}
+            </h1>
           </div>
           <nav className="text-sm text-muted-foreground flex items-center gap-2">
-            <Link to="/" className="hover:text-primary transition-colors">Accueil</Link>
+            <Link to="/" className="hover:text-primary transition-colors">
+              {t('home')}
+            </Link>
             <span className="text-border">/</span>
-            <span className="text-foreground">Chambres</span>
+            <span className="text-foreground">{t('rooms')}</span>
           </nav>
         </div>
       </section>
@@ -172,7 +185,7 @@ export default function Rooms() {
               className="flex flex-col items-center justify-center py-20"
             >
               <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
-              <p className="text-muted-foreground">Chargement des chambres...</p>
+              <p className="text-muted-foreground">{t('loading_rooms')}</p>
             </motion.div>
           )}
 
@@ -183,10 +196,12 @@ export default function Rooms() {
               animate={{ opacity: 1, y: 0 }}
               className="text-center bg-destructive/10 border border-destructive/30 rounded-2xl p-8"
             >
-              <h4 className="font-serif text-xl font-semibold text-destructive mb-2">Erreur de chargement</h4>
+              <h4 className="font-serif text-xl font-semibold text-destructive mb-2">
+                {t('loading_error')}
+              </h4>
               <p className="text-muted-foreground mb-4">{error}</p>
               <Button onClick={() => window.location.reload()}>
-                Réessayer
+                {t('retry')}
               </Button>
             </motion.div>
           )}
@@ -201,60 +216,68 @@ export default function Rooms() {
               className="grid gap-4 md:grid-cols-2 lg:grid-cols-4"
             >
               <div>
-                <label className="text-sm font-medium text-muted-foreground">Fourchette de Prix (FBu)</label>
+                <label className="text-sm font-medium text-muted-foreground">
+                  {t('price_range')} (FBu)
+                </label>
                 <select
                   className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2"
                   value={price}
                   onChange={(e) => setPrice(e.target.value as PriceFilter)}
                 >
-                  <option value="all">Tous les Prix</option>
-                  <option value="under-50k">Moins de 50 000</option>
-                  <option value="50k-100k">50 000 - 100 000</option>
-                  <option value="100k-150k">100 000 - 150 000</option>
-                  <option value="over-150k">150 000+</option>
+                  <option value="all">{t('all_prices')}</option>
+                  <option value="under-50k">{t('under_50k')}</option>
+                  <option value="50k-100k">{t('50k_100k')}</option>
+                  <option value="100k-150k">{t('100k_150k')}</option>
+                  <option value="over-150k">{t('over_150k')}</option>
                 </select>
               </div>
               <div>
-                <label className="text-sm font-medium text-muted-foreground">Capacité d'Accueil</label>
+                <label className="text-sm font-medium text-muted-foreground">
+                  {t('guest_capacity')}
+                </label>
                 <select
                   className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2"
                   value={guests}
                   onChange={(e) => setGuests(e.target.value as GuestsFilter)}
                 >
-                  <option value="any">Toute Capacité</option>
-                  <option value="1">1 Personne</option>
-                  <option value="2">1-2 Personnes</option>
-                  <option value="3">3-4 Personnes</option>
-                  <option value="5">5+ Personnes</option>
+                  <option value="any">{t('any_capacity')}</option>
+                  <option value="1">{t('1_person')}</option>
+                  <option value="2">{t('1_2_people')}</option>
+                  <option value="3">{t('3_4_people')}</option>
+                  <option value="5">{t('5_people')}</option>
                 </select>
               </div>
               <div>
-                <label className="text-sm font-medium text-muted-foreground">Type de Chambre</label>
+                <label className="text-sm font-medium text-muted-foreground">
+                  {t('room_type')}
+                </label>
                 <select
                   className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2"
                   value={type}
                   onChange={(e) => setType(e.target.value as RoomType | "all")}
                 >
-                  <option value="all">Toutes les Chambres</option>
-                  <option value="suite">Suite</option>
-                  <option value="standard">Chambre Standard</option>
-                  <option value="family">Chambre Familiale</option>
-                  <option value="twin">Chambre Twin</option>
-                  <option value="bungalow">Bungalow Groupe</option>
+                  <option value="all">{t('all_rooms')}</option>
+                  <option value="suite">{t('suite')}</option>
+                  <option value="standard">{t('standard_room')}</option>
+                  <option value="family">{t('family_room')}</option>
+                  <option value="twin">{t('twin_room')}</option>
+                  <option value="bungalow">{t('bungalow')}</option>
                 </select>
               </div>
               <div>
-                <label className="text-sm font-medium text-muted-foreground">Trier Par</label>
+                <label className="text-sm font-medium text-muted-foreground">
+                  {t('sort_by')}
+                </label>
                 <select
                   className="mt-1 w-full rounded-lg border border-border bg-background px-3 py-2"
                   value={sort}
                   onChange={(e) => setSort(e.target.value as SortFilter)}
                 >
-                  <option value="popular">Les Plus Populaires</option>
-                  <option value="price_low">Prix : Croissant</option>
-                  <option value="price_high">Prix : Décroissant</option>
-                  <option value="rating">Évaluation Client</option>
-                  <option value="size">Taille de Chambre</option>
+                  <option value="popular">{t('most_popular')}</option>
+                  <option value="price_low">{t('price_low_high')}</option>
+                  <option value="price_high">{t('price_high_low')}</option>
+                  <option value="rating">{t('customer_rating')}</option>
+                  <option value="size">{t('room_size')}</option>
                 </select>
               </div>
             </motion.div>
@@ -282,18 +305,18 @@ export default function Rooms() {
                       loading="lazy"
                     />
                     <div className="absolute top-4 right-4 bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-semibold">
-                      {room.price.toLocaleString()} FBu
+                      {formatPrice(room.price)}
                     </div>
                   </div>
                   <div className="p-6 space-y-3">
                     <div className="flex items-center gap-3 text-sm text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Users className="w-4 h-4" />
-                        <span>{room.guests} pers.</span>
+                        <span>{room.guests} {t('people')}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <BedDouble className="w-4 h-4" />
-                        <span>{room.type}</span>
+                        <span>{t(room.type)}</span>
                       </div>
                       <div className="flex items-center gap-1">
                         <Square className="w-4 h-4" />
@@ -312,23 +335,27 @@ export default function Rooms() {
                         <span className="font-semibold">{room.rating.toFixed(1)}</span>
                         <span className="text-muted-foreground">/5</span>
                         {room.review_count > 0 && (
-                          <span className="text-muted-foreground ml-1">({room.review_count} avis)</span>
+                          <span className="text-muted-foreground ml-1">
+                            ({room.review_count} {t('reviews')})
+                          </span>
                         )}
                       </div>
                     ) : (
                       <div className="flex items-center gap-1 text-sm text-muted-foreground">
                         <Star className="w-4 h-4" />
-                        <span>Pas encore d'avis</span>
+                        <span>{t('no_reviews_yet')}</span>
                       </div>
                     )}
                     <div className="flex gap-3">
                       <Button asChild variant="outline" className="flex-1 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                         <Link to="/contact">
-                          Réserver <ArrowDownCircle className="w-4 h-4 ml-2" />
+                          {t('book')} <ArrowDownCircle className="w-4 h-4 ml-2" />
                         </Link>
                       </Button>
                       <Button asChild className="flex-1" variant="secondary">
-                        <Link to={`/chambres/${room.slug}`}>Voir détails</Link>
+                        <Link to={`/chambres/${room.slug}`}>
+                          {t('view_details')}
+                        </Link>
                       </Button>
                     </div>
                   </div>
@@ -345,10 +372,14 @@ export default function Rooms() {
               viewport={{ once: true }}
               className="text-center bg-secondary/40 border border-border rounded-2xl p-8"
             >
-              <h4 className="font-serif text-xl font-semibold text-foreground mb-2">Aucune chambre ne correspond</h4>
-              <p className="text-muted-foreground mb-4">Ajustez vos filtres pour voir plus d'options.</p>
+              <h4 className="font-serif text-xl font-semibold text-foreground mb-2">
+                {t('no_rooms_match')}
+              </h4>
+              <p className="text-muted-foreground mb-4">
+                {t('adjust_filters')}
+              </p>
               <Button onClick={() => { setPrice("all"); setGuests("any"); setType("all"); setSort("popular"); }}>
-                Réinitialiser les filtres
+                {t('reset_filters')}
               </Button>
             </motion.div>
           )}
@@ -367,7 +398,7 @@ export default function Rooms() {
                 className="inline-flex items-center gap-2"
               >
                 <ArrowDownCircle className="w-5 h-5" />
-                Voir Plus de Chambres
+                {t('view_more_rooms')}
               </Button>
             </motion.div>
           )}
