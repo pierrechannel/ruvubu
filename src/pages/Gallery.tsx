@@ -101,6 +101,8 @@ export default function Gallery() {
   };
 
   return (
+    
+    <Layout>
     <div className="min-h-screen bg-gray-50">
       {/* Page Header */}
       <section className="bg-white py-10 border-b border-gray-200">
@@ -281,5 +283,6 @@ export default function Gallery() {
         )}
       </AnimatePresence>
     </div>
+    </Layout>
   );
 }
