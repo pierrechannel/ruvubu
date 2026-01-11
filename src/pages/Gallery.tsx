@@ -101,7 +101,7 @@ export default function Gallery() {
   };
 
   return (
-    
+    <>
     <Layout>
     <div className="min-h-screen bg-gray-50">
       {/* Page Header */}
@@ -284,5 +284,6 @@ export default function Gallery() {
       </AnimatePresence>
     </div>
     </Layout>
+    </>
   );
 }
