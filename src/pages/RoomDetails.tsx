@@ -45,18 +45,28 @@ type ApiRoomDetail = {
   slug: string;
   description: string;
   price: string;
-  formatted_price: string;
   max_guests: number;
   size: string;
   view_type: string;
   room_type: string;
+  bed_type: string;
+  bed_count: number;
   rating: string;
   review_count: number;
   is_featured: boolean;
-  primary_image: string;
-  tags: { name: string; type: string }[];
-  amenities?: { name: string; icon?: string }[];
-  images?: string[];
+  is_available: boolean;
+  images: {
+    id: number;
+    room_id: number;
+    image_path: string;
+    alt_text: string;
+    is_primary: number;
+    sort_order: number;
+    created_at: string;
+    updated_at: string;
+  }[];
+  features: { name: string }[];
+  tags: { name: string }[];
 };
 
 const fadeUp = {
@@ -89,33 +99,40 @@ export default function RoomDetails() {
         if (!roomResponse.ok) throw new Error("Room not found");
         const roomData = await roomResponse.json();
         
+        // Check if response has success wrapper
+        const room = roomData.success ? roomData.data : roomData;
+        
         // Transform room data
         const transformedRoom: RoomDetail = {
-          id: roomData.id,
-          slug: roomData.slug,
-          name: roomData.name,
-          type: roomData.room_type === "suite" ? "Suite" : roomData.room_type === "standard" ? "Standard" : "Bungalow",
-          description: roomData.description === "undefined" ? "Chambre confortable avec toutes les commodités nécessaires pour un séjour agréable." : roomData.description,
-          rating: parseFloat(roomData.rating) || 0,
-          reviewCount: roomData.review_count || 0,
-          maxGuests: roomData.max_guests,
-          size: parseFloat(roomData.size),
-          bed: roomData.room_type === "suite" ? "1 King" : "1 Queen",
-          view: roomData.view_type as "safari" | "garden" | "city",
-          isFeatured: roomData.is_featured,
-          isAvailable: true,
-          tags: roomData.tags?.map((tag: any) => tag.name) || [],
-          images: roomData.images && roomData.images.length > 0 
-            ? roomData.images.map((img: string) => `https://ruvubu-hotel.com${img}`)
-            : [`https://ruvubu-hotel.com${roomData.primary_image}`],
-          features: roomData.amenities?.map((amenity: any) => ({ name: amenity.name })) || [
+          id: room.id,
+          slug: room.slug,
+          name: room.name,
+          type: room.room_type === "suite" ? "Suite" : room.room_type === "standard" ? "Standard" : "Bungalow",
+          description: room.description === "undefined" || !room.description ? 
+            "Chambre confortable avec toutes les commodités nécessaires pour un séjour agréable." : 
+            room.description,
+          rating: parseFloat(room.rating) || 0,
+          reviewCount: room.review_count || 0,
+          maxGuests: room.max_guests,
+          size: parseFloat(room.size),
+          bed: room.bed_count === 1 && room.bed_type === "king" ? "1 King" : 
+               room.bed_count === 1 && room.bed_type === "queen" ? "1 Queen" : 
+               room.bed_count === 1 ? "1 Simple" : `${room.bed_count} Lits simples`,
+          view: (room.view_type as "safari" | "garden" | "city") || "garden",
+          isFeatured: room.is_featured,
+          isAvailable: room.is_available,
+          tags: room.tags?.map((tag: any) => tag.name) || [],
+          images: room.images && room.images.length > 0 
+            ? room.images.map((img: any) => `https://ruvubu-hotel.com/storage/${img.image_path}`)
+            : ['/placeholder-room.jpg'],
+          features: room.features?.map((feature: any) => ({ name: feature.name })) || [
             { name: "Climatisation" },
             { name: "WiFi Haut Débit" },
             { name: "Salle de bain privée" },
             { name: "Télévision" },
           ],
-          price: parseFloat(roomData.price),
-          formatted_price: roomData.formatted_price,
+          price: parseFloat(room.price),
+          formatted_price: `${parseFloat(room.price).toLocaleString('fr-FR')} FBu`,
         };
 
         setRoom(transformedRoom);
@@ -124,26 +141,37 @@ export default function RoomDetails() {
         const allRoomsResponse = await fetch("https://ruvubu-hotel.com/api/rooms");
         if (allRoomsResponse.ok) {
           const allRoomsData = await allRoomsResponse.json();
-          const similar = allRoomsData.rooms
-            .filter((r: any) => r.slug !== slug && r.room_type === roomData.room_type)
+          const rooms = allRoomsData.success ? allRoomsData.data?.rooms || allRoomsData.data : allRoomsData;
+          
+          // Make sure rooms is an array
+          const roomsArray = Array.isArray(rooms) ? rooms : [];
+          
+          const similar = roomsArray
+            .filter((r: any) => r.slug !== slug && r.room_type === room.room_type)
             .slice(0, 3)
             .map((r: any) => ({
               id: r.id,
               slug: r.slug,
               name: r.name,
               type: r.room_type === "suite" ? "Suite" : r.room_type === "standard" ? "Standard" : "Bungalow",
-              description: r.description === "undefined" ? "Chambre confortable." : r.description,
+              description: r.description === "undefined" || !r.description ? 
+                "Chambre confortable." : 
+                r.description.substring(0, 100) + '...',
               rating: parseFloat(r.rating) || 0,
               reviewCount: r.review_count || 0,
               maxGuests: r.max_guests,
               size: parseFloat(r.size),
-              bed: "1 Queen",
-              view: r.view_type,
+              bed: r.bed_count === 1 && r.bed_type === "king" ? "1 King" : 
+                   r.bed_count === 1 && r.bed_type === "queen" ? "1 Queen" : 
+                   r.bed_count === 1 ? "1 Simple" : `${r.bed_count} Lits simples`,
+              view: (r.view_type as "safari" | "garden" | "city") || "garden",
               tags: r.tags?.map((tag: any) => tag.name) || [],
-              images: [`https://ruvubu-hotel.com${r.primary_image}`],
+              images: r.images && r.images.length > 0 
+                ? [`https://ruvubu-hotel.com/storage/${r.images[0].image_path}`]
+                : ['/placeholder-room.jpg'],
               features: [],
               price: parseFloat(r.price),
-              formatted_price: r.formatted_price,
+              formatted_price: `${parseFloat(r.price).toLocaleString('fr-FR')} FBu`,
             }));
           setSimilarRooms(similar);
         }
@@ -243,6 +271,10 @@ export default function RoomDetails() {
                 alt={room.name}
                 className="w-full h-full object-cover"
                 loading="lazy"
+                onError={(e) => {
+                  e.currentTarget.src = '/placeholder-room.jpg';
+                  e.currentTarget.onerror = null;
+                }}
               />
               <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
                 {room.view === "safari" && (
@@ -255,6 +287,11 @@ export default function RoomDetails() {
                     <Eye className="w-4 h-4" /> Vue Jardin
                   </span>
                 )}
+                {room.view === "city" && (
+                  <span className="px-3 py-1 rounded-full text-xs bg-blue-500 text-white flex items-center gap-1">
+                    <Eye className="w-4 h-4" /> Vue Ville
+                  </span>
+                )}
               </div>
             </motion.div>
 
@@ -263,7 +300,16 @@ export default function RoomDetails() {
               <motion.div {...fadeUp} className="grid sm:grid-cols-3 gap-3">
                 {room.images.slice(1, 4).map((img, idx) => (
                   <div key={img + idx} className="rounded-xl overflow-hidden aspect-[4/3] shadow-hotel-sm">
-                    <img src={img} alt={`${room.name} ${idx + 2}`} className="w-full h-full object-cover" loading="lazy" />
+                    <img 
+                      src={img} 
+                      alt={`${room.name} ${idx + 2}`} 
+                      className="w-full h-full object-cover" 
+                      loading="lazy" 
+                      onError={(e) => {
+                        e.currentTarget.src = '/placeholder-room.jpg';
+                        e.currentTarget.onerror = null;
+                      }}
+                    />
                   </div>
                 ))}
               </motion.div>
@@ -290,7 +336,7 @@ export default function RoomDetails() {
                   </div>
                   <div className="flex items-center gap-2">
                     <Eye className="w-4 h-4 text-primary" />
-                    <span><strong className="text-foreground">Vue:</strong> {room.view === "safari" ? "Safari" : room.view === "garden" ? "Jardin" : "Extérieur"}</span>
+                    <span><strong className="text-foreground">Vue:</strong> {room.view === "safari" ? "Safari" : room.view === "garden" ? "Jardin" : "Ville"}</span>
                   </div>
                 </div>
                 <div>
@@ -330,7 +376,16 @@ export default function RoomDetails() {
                   {similarRooms.map((sim) => (
                     <div key={sim.slug} className="bg-card border border-border rounded-xl overflow-hidden shadow-hotel-sm">
                       <div className="aspect-[4/3] overflow-hidden">
-                        <img src={sim.images[0]} alt={sim.name} className="w-full h-full object-cover" loading="lazy" />
+                        <img 
+                          src={sim.images[0]} 
+                          alt={sim.name} 
+                          className="w-full h-full object-cover" 
+                          loading="lazy"
+                          onError={(e) => {
+                            e.currentTarget.src = '/placeholder-room.jpg';
+                            e.currentTarget.onerror = null;
+                          }}
+                        />
                       </div>
                       <div className="p-4 space-y-2">
                         <h4 className="font-semibold text-foreground text-sm line-clamp-2">{sim.name}</h4>
