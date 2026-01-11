@@ -1,6 +1,8 @@
 import { useMemo, useState } from "react";
 import { Images, Eye, Loader2, AlertCircle, RefreshCw, PlusCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Layout } from '@/components/layout/Layout';
+
 
 type Category = "all" | "rooms" | "amenities" | "dining" | "exterior";
 
