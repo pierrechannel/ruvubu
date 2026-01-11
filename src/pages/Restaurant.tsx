@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect, useRef } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, type Transition } from "framer-motion";
 import { 
   CheckCircle2, 
   UtensilsCrossed, 
@@ -66,7 +66,7 @@ const fadeUp = {
   initial: { opacity: 0, y: 30 },
   whileInView: { opacity: 1, y: 0 },
   viewport: { once: true, margin: "-50px" },
-  transition: { duration: 0.6, ease: "easeOut" }
+  transition: { duration: 0.6, ease: "easeOut" } as Transition
 };
 
 const staggerContainer = {
@@ -83,7 +83,7 @@ const staggerContainer = {
 const itemAnimation = {
   initial: { opacity: 0, y: 20 },
   whileInView: { opacity: 1, y: 0 },
-  transition: { duration: 0.4, ease: "easeOut" }
+  transition: { duration: 0.4, ease: "easeOut" } as Transition
 };
 
 const categoryTranslations: Record<string, string> = {
@@ -266,7 +266,7 @@ export default function Restaurant() {
           <motion.div
             initial={{ opacity: 0, y: 40 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
             className="max-w-3xl"
           >
             <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 text-accent text-sm font-medium mb-6">
@@ -330,7 +330,10 @@ export default function Restaurant() {
                 ].map((item, idx) => (
                   <motion.div
                     key={idx}
-                    {...itemAnimation}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    viewport={{ once: true }}
                     className="flex items-start gap-4 p-4 rounded-xl bg-card border border-border/50"
                   >
                     <div className="p-2 rounded-lg bg-accent/10 text-accent">
