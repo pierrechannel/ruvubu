@@ -1,86 +1,52 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { CheckCircle2, UtensilsCrossed, Wine, Coffee, Flame, Leaf } from "lucide-react";
+import { CheckCircle2, UtensilsCrossed, Wine, Loader2 } from "lucide-react";
 
-type MenuCategory = "all" | "entree" | "plat" | "dessert" | "boisson";
+type MenuCategory = "all" | "burundian" | "international";
 
 type MenuItem = {
+  id: number;
   name: string;
   description: string;
   price: string;
-  category: MenuCategory;
+  category: string;
   image: string;
+  tag: string | null;
+  is_special: boolean;
+  is_active: boolean;
+  sort_order: number;
 };
 
-const menuItems: MenuItem[] = [
-  {
-    name: "Brochettes Burundaises",
-    description: "Viandes grillées, marinade aux épices locales, servies avec bananes plantain.",
-    price: "18 000 FBu",
-    category: "plat",
-    image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop",
-  },
-  {
-    name: "Sambaza du Ruvubu",
-    description: "Poisson du lac frit, sauce citronnée et légumes croquants.",
-    price: "15 000 FBu",
-    category: "plat",
-    image: "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop",
-  },
-  {
-    name: "Salade Verte des Jardins",
-    description: "Légumes frais du potager, vinaigrette au citron et herbes de Buhumuza.",
-    price: "10 000 FBu",
-    category: "entree",
-    image: "https://images.unsplash.com/photo-1540189549336-e6e99c3679fe?w=600&h=400&fit=crop",
-  },
-  {
-    name: "Mukeke Grillé",
-    description: "Spécialité du Burundi, cuisson au feu de bois et citrons verts.",
-    price: "22 000 FBu",
-    category: "plat",
-    image: "https://images.unsplash.com/photo-1467003909585-2f8a72700288?w=600&h=400&fit=crop",
-  },
-  {
-    name: "Gâteau Ananas & Vanille",
-    description: "Dessert léger, caramel doux et fruits de saison.",
-    price: "9 000 FBu",
-    category: "dessert",
-    image: "https://images.unsplash.com/photo-1505253758473-96b7015fcd40?w=600&h=400&fit=crop",
-  },
-  {
-    name: "Limonade du Jardin",
-    description: "Citron vert, menthe fraîche du jardin, miel local.",
-    price: "6 000 FBu",
-    category: "boisson",
-    image: "https://images.unsplash.com/photo-1481391300593-2c9e0526eb02?w=600&h=400&fit=crop",
-  },
-  {
-    name: "Cold Brew & Café Local",
-    description: "Sélection arabica burundais, extraction douce, notes florales.",
-    price: "7 000 FBu",
-    category: "boisson",
-    image: "https://images.unsplash.com/photo-1509042239860-f550ce710b93?w=600&h=400&fit=crop",
-  },
-  {
-    name: "Tarte Maracuja",
-    description: "Passion fruit, pâte croustillante, crème légère.",
-    price: "9 500 FBu",
-    category: "dessert",
-    image: "https://images.unsplash.com/photo-1523987355523-c7b5b84bec71?w=600&h=400&fit=crop",
-  },
-];
+type MenuItemsResponse = {
+  success: boolean;
+  data: {
+    current_page: number;
+    data: MenuItem[];
+    first_page_url: string;
+    from: number;
+    last_page: number;
+    last_page_url: string;
+    links: Array<{
+      url: string | null;
+      label: string;
+      active: boolean;
+    }>;
+    next_page_url: string | null;
+    path: string;
+    per_page: number;
+    prev_page_url: string | null;
+    to: number;
+    total: number;
+  };
+};
 
-const filterLabels: { value: MenuCategory; label: string }[] = [
-  { value: "all", label: "Tout" },
-  { value: "entree", label: "Entrées" },
-  { value: "plat", label: "Plats" },
-  { value: "dessert", label: "Desserts" },
-  { value: "boisson", label: "Boissons" },
-];
+type CategoriesResponse = {
+  success: boolean;
+  data: string[];
+};
 
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
@@ -88,13 +54,128 @@ const fadeUp = {
   viewport: { once: true },
 };
 
+const categoryTranslations: Record<string, string> = {
+  burundian: "Burundais",
+  international: "International",
+};
+
 export default function Restaurant() {
   const [filter, setFilter] = useState<MenuCategory>("all");
+  const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadingCategories, setLoadingCategories] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+
+  const fetchMenuItems = async (page: number = 1) => {
+    try {
+      setLoading(true);
+      const response = await fetch(`https://ruvubu-hotel.com/api/v1/menu-items?page=${page}`);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data: MenuItemsResponse = await response.json();
+      
+      if (data.success) {
+        setMenuItems(data.data.data);
+        setTotalPages(data.data.last_page);
+        setCurrentPage(data.data.current_page);
+      } else {
+        throw new Error("Failed to fetch menu items");
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to load menu");
+      console.error("Error fetching menu items:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCategories = async () => {
+    try {
+      setLoadingCategories(true);
+      const response = await fetch("https://ruvubu-hotel.com/api/v1/categories");
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const data: CategoriesResponse = await response.json();
+      
+      if (data.success) {
+        setCategories(data.data);
+      } else {
+        throw new Error("Failed to fetch categories");
+      }
+    } catch (err) {
+      console.error("Error fetching categories:", err);
+    } finally {
+      setLoadingCategories(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchMenuItems();
+    fetchCategories();
+  }, []);
+
+  const filterLabels = useMemo(() => {
+    const labels = [{ value: "all" as MenuCategory, label: "Tout" }];
+    
+    categories.forEach(category => {
+      labels.push({
+        value: category as MenuCategory,
+        label: categoryTranslations[category] || category
+      });
+    });
+    
+    return labels;
+  }, [categories]);
 
   const visibleItems = useMemo(() => {
     if (filter === "all") return menuItems;
     return menuItems.filter((item) => item.category === filter);
-  }, [filter]);
+  }, [menuItems, filter]);
+
+  const formatPrice = (price: string) => {
+    const numericPrice = parseFloat(price);
+    if (isNaN(numericPrice)) return price;
+    
+    return `${numericPrice.toLocaleString('fr-FR')} FBu`;
+  };
+
+  const getImageUrl = (imagePath: string) => {
+    if (imagePath.startsWith('http')) {
+      return imagePath;
+    }
+    
+    const cleanPath = imagePath.replace('storage/', '');
+    return `https://ruvubu-hotel.com/storage/${cleanPath}`;
+  };
+
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      fetchMenuItems(page);
+    }
+  };
+
+  if (error) {
+    return (
+      <Layout>
+        <div className="container mx-auto px-4 py-16 text-center">
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Error</h2>
+          <p className="text-muted-foreground">{error}</p>
+          <Button onClick={() => fetchMenuItems()} className="mt-4">
+            Retry
+          </Button>
+        </div>
+      </Layout>
+    );
+  }
 
   return (
     <Layout>
@@ -180,56 +261,120 @@ export default function Restaurant() {
           </motion.div>
 
           <motion.div {...fadeUp} className="flex flex-wrap justify-center gap-3">
-            {filterLabels.map((f) => {
-              const active = f.value === filter;
-              return (
-                <button
-                  key={f.value}
-                  onClick={() => setFilter(f.value)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${
-                    active
-                      ? "bg-accent text-accent-foreground border-accent shadow-hotel-sm"
-                      : "bg-card text-foreground border-border hover:border-accent/60"
-                  }`}
-                >
-                  {f.label}
-                </button>
-              );
-            })}
+            {loadingCategories ? (
+              <div className="py-2 px-4">
+                <Loader2 className="w-4 h-4 animate-spin" />
+              </div>
+            ) : (
+              filterLabels.map((f) => {
+                const active = f.value === filter;
+                return (
+                  <button
+                    key={f.value}
+                    onClick={() => setFilter(f.value)}
+                    className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${
+                      active
+                        ? "bg-accent text-accent-foreground border-accent shadow-hotel-sm"
+                        : "bg-card text-foreground border-border hover:border-accent/60"
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                );
+              })
+            )}
           </motion.div>
 
-          <motion.div
-            {...fadeUp}
-            className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            {visibleItems.map((item, idx) => (
+          {loading ? (
+            <div className="flex justify-center items-center py-20">
+              <Loader2 className="w-8 h-8 animate-spin text-accent" />
+            </div>
+          ) : visibleItems.length === 0 ? (
+            <div className="text-center py-10">
+              <p className="text-muted-foreground">Aucun élément de menu disponible pour cette catégorie.</p>
+            </div>
+          ) : (
+            <>
               <motion.div
-                key={item.name}
-                initial={{ opacity: 0, scale: 0.96 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.35, delay: idx * 0.05 }}
-                className="bg-card border border-border rounded-2xl overflow-hidden shadow-hotel-sm hover:shadow-hotel-lg transition-all duration-300"
+                {...fadeUp}
+                className="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
               >
-                <div className="relative aspect-[4/3] overflow-hidden">
-                  <img
-                    src={item.image}
-                    alt={item.name}
-                    className="w-full h-full object-cover"
-                    loading="lazy"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                  <div className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold bg-accent text-accent-foreground">
-                    {item.price}
-                  </div>
-                </div>
-                <div className="p-5 space-y-2">
-                  <h4 className="font-serif text-xl font-semibold text-foreground">{item.name}</h4>
-                  <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">{item.description}</p>
-                </div>
+                {visibleItems.map((item, idx) => (
+                  <motion.div
+                    key={item.id}
+                    initial={{ opacity: 0, scale: 0.96 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.35, delay: idx * 0.05 }}
+                    className="bg-card border border-border rounded-2xl overflow-hidden shadow-hotel-sm hover:shadow-hotel-lg transition-all duration-300"
+                  >
+                    <div className="relative aspect-[4/3] overflow-hidden">
+                      <img
+                        src={getImageUrl(item.image)}
+                        alt={item.name}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                        onError={(e) => {
+                          // Fallback image if the original fails to load
+                          e.currentTarget.src = "https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=600&h=400&fit=crop";
+                        }}
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                      <div className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold bg-accent text-accent-foreground">
+                        {formatPrice(item.price)}
+                      </div>
+                      {item.tag && (
+                        <div className="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold bg-primary text-primary-foreground">
+                          {item.tag}
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-5 space-y-2">
+                      <h4 className="font-serif text-xl font-semibold text-foreground">{item.name}</h4>
+                      <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                        {item.description === "undefined" ? "Délicieuse spécialité maison" : item.description}
+                      </p>
+                      <div className="flex items-center justify-between pt-2">
+                        <span className="text-xs px-2 py-1 rounded-full bg-secondary text-secondary-foreground">
+                          {categoryTranslations[item.category] || item.category}
+                        </span>
+                        {item.is_special && (
+                          <span className="text-xs px-2 py-1 rounded-full bg-yellow-100 text-yellow-800">
+                            Spécial
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
               </motion.div>
-            ))}
-          </motion.div>
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <motion.div {...fadeUp} className="flex justify-center items-center gap-2 pt-8">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                  >
+                    Précédent
+                  </Button>
+                  <span className="text-sm text-muted-foreground">
+                    Page {currentPage} sur {totalPages}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                  >
+                    Suivant
+                  </Button>
+                </motion.div>
+              )}
+            </>
+          )}
         </div>
       </section>
 
