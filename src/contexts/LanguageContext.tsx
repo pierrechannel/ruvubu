@@ -213,6 +213,18 @@ const translations = {
     'social_media_description': 'Restez informé de nos dernières nouvelles, offres et événements culturels',
     'tripadvisor_handle': 'Lire les avis',
 
+    // Gallery page translations
+    // 'gallery': 'Galerie',
+    'all_categories': 'Toutes',
+    'categories_fetch_error': 'Échec du chargement des catégories',
+    'gallery_fetch_error': 'Échec du chargement des éléments de la galerie',
+    'loading_gallery': 'Chargement de la galerie...',
+    'refresh_page': 'Actualiser la page',
+    'no_gallery_items': 'Aucun élément de galerie trouvé.',
+    // 'loading': 'Chargement...',
+    'load_more_photos': 'Charger plus de photos',
+    'need_more_photos': 'Besoin d\'autres photos ? Contactez-nous',
+
   },
   en: {
     // Header translations
@@ -415,17 +427,17 @@ const translations = {
     'social_media_description': 'Stay informed about our latest news, offers, and cultural events',
     'tripadvisor_handle': 'Read reviews',
 
-    // Gallery page translations
-    // 'gallery': 'Galerie',
-    'all_categories': 'Toutes',
-    'categories_fetch_error': 'Échec du chargement des catégories',
-    'gallery_fetch_error': 'Échec du chargement des éléments de la galerie',
-    'loading_gallery': 'Chargement de la galerie...',
-    'refresh_page': 'Actualiser la page',
-    'no_gallery_items': 'Aucun élément de galerie trouvé.',
-    // 'loading': 'Chargement...',
-    'load_more_photos': 'Charger plus de photos',
-    'need_more_photos': 'Besoin d\'autres photos ? Contactez-nous',
+    
+
+    'all_categories': 'All',
+    'categories_fetch_error': 'Failed to load categories',
+    'gallery_fetch_error': 'Failed to load gallery items',
+    'loading_gallery': 'Loading gallery...',
+    'refresh_page': 'Refresh Page',
+    'no_gallery_items': 'No gallery items found.',
+    // 'loading': 'Loading...',
+    'load_more_photos': 'Load More Photos',
+    'need_more_photos': 'Need more photos? Contact us',
   }
 };
 
