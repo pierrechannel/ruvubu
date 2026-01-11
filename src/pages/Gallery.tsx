@@ -280,6 +280,8 @@ export default function Gallery() {
           </motion.div>
         )}
       </AnimatePresence>
+      </Layout>
     </div>
+    
   );
 }
