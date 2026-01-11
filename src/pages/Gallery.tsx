@@ -2,6 +2,8 @@ import { useMemo, useState, useEffect } from "react";
 import { Images, Eye, Loader2, AlertCircle, RefreshCw, PlusCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Layout } from '@/components/layout/Layout';
+import { Link } from "react-router-dom";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 type Category = {
   id: number;
@@ -71,6 +73,8 @@ export default function Gallery() {
   const [pagination, setPagination] = useState<Pagination | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedImage, setSelectedImage] = useState<{ src: string; title: string; subtitle?: string } | null>(null);
+  
+  const { t } = useLanguage();
 
   // Fetch categories
   useEffect(() => {
@@ -83,11 +87,11 @@ export default function Gallery() {
         if (data.success) {
           setCategories(data.data);
         } else {
-          setError('Failed to load categories');
+          setError(t('categories_fetch_error'));
         }
       } catch (err) {
         console.error('Error fetching categories:', err);
-        setError('Failed to load categories');
+        setError(t('categories_fetch_error'));
       } finally {
         setCategoriesLoading(false);
       }
@@ -123,11 +127,11 @@ export default function Gallery() {
         setHasMore(data.pagination.current_page < data.pagination.last_page);
         setError(null);
       } else {
-        setError('Failed to load gallery items');
+        setError(t('gallery_fetch_error'));
       }
     } catch (err) {
       console.error('Error fetching gallery items:', err);
-      setError('Failed to load gallery items');
+      setError(t('gallery_fetch_error'));
     } finally {
       setLoading(false);
     }
@@ -169,7 +173,7 @@ export default function Gallery() {
 
   // Get filter labels from categories
   const filterLabels = [
-    { value: "all", label: "Toutes" },
+    { value: "all", label: t('all_categories') },
     ...categories
       .filter(cat => cat.is_active)
       .sort((a, b) => a.order - b.order)
@@ -187,13 +191,19 @@ export default function Gallery() {
           <section className="bg-white py-10 border-b border-gray-200">
             <div className="container mx-auto px-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div>
-                <p className="text-xs uppercase tracking-widest text-amber-600 font-semibold mb-2">Galerie</p>
-                <h1 className="font-serif text-3xl md:text-4xl font-bold text-gray-900">Gallery</h1>
+                <p className="text-xs uppercase tracking-widest text-amber-600 font-semibold mb-2">
+                  {t('gallery')}
+                </p>
+                <h1 className="font-serif text-3xl md:text-4xl font-bold text-gray-900">
+                  {t('gallery')}
+                </h1>
               </div>
               <nav className="text-sm text-gray-600 flex items-center gap-2">
-                <a href="/" className="hover:text-amber-600 transition-colors">Home</a>
+                <Link to="/" className="hover:text-amber-600 transition-colors">
+                  {t('home')}
+                </Link>
                 <span className="text-gray-300">/</span>
-                <span className="text-gray-900">Gallery</span>
+                <span className="text-gray-900">{t('gallery')}</span>
               </nav>
             </div>
           </section>
@@ -231,7 +241,7 @@ export default function Gallery() {
               {loading && items.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-20 text-center">
                   <Loader2 className="w-12 h-12 text-amber-600 animate-spin mb-4" />
-                  <p className="text-gray-600">Loading gallery...</p>
+                  <p className="text-gray-600">{t('loading_gallery')}</p>
                 </div>
               ) : error ? (
                 <div className="flex flex-col items-center justify-center py-20 text-center">
@@ -242,13 +252,13 @@ export default function Gallery() {
                     className="px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 flex items-center gap-2"
                   >
                     <RefreshCw className="w-4 h-4" />
-                    Refresh Page
+                    {t('refresh_page')}
                   </button>
                 </div>
               ) : visibleItems.length === 0 ? (
                 <div className="flex flex-col items-center justify-center py-20 text-center">
                   <Images className="w-12 h-12 text-gray-400 mb-4" />
-                  <p className="text-gray-600">No gallery items found.</p>
+                  <p className="text-gray-600">{t('no_gallery_items')}</p>
                 </div>
               ) : (
                 <motion.div
@@ -304,12 +314,12 @@ export default function Gallery() {
                     {loading ? (
                       <>
                         <Loader2 className="w-5 h-5 animate-spin" />
-                        Loading...
+                        {t('loading')}
                       </>
                     ) : (
                       <>
                         <PlusCircle className="w-5 h-5" />
-                        Load More Photos
+                        {t('load_more_photos')}
                       </>
                     )}
                   </button>
@@ -318,13 +328,13 @@ export default function Gallery() {
 
               {/* Contact Button */}
               <motion.div {...fadeUp} className="text-center">
-                <a 
-                  href="/contact" 
+                <Link 
+                  to="/contact" 
                   className="inline-flex items-center gap-2 px-6 py-3 border border-gray-300 rounded-full hover:bg-gray-50 transition-colors"
                 >
                   <Images className="w-5 h-5" />
-                  Besoin d'autres photos ? Contactez-nous
-                </a>
+                  {t('need_more_photos')}
+                </Link>
               </motion.div>
             </div>
           </section>

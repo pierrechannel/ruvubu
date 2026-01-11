@@ -414,6 +414,18 @@ const translations = {
     'connect_on_social_media': 'Connect on Social Media',
     'social_media_description': 'Stay informed about our latest news, offers, and cultural events',
     'tripadvisor_handle': 'Read reviews',
+
+    // Gallery page translations
+    // 'gallery': 'Galerie',
+    'all_categories': 'Toutes',
+    'categories_fetch_error': 'Échec du chargement des catégories',
+    'gallery_fetch_error': 'Échec du chargement des éléments de la galerie',
+    'loading_gallery': 'Chargement de la galerie...',
+    'refresh_page': 'Actualiser la page',
+    'no_gallery_items': 'Aucun élément de galerie trouvé.',
+    // 'loading': 'Chargement...',
+    'load_more_photos': 'Charger plus de photos',
+    'need_more_photos': 'Besoin d\'autres photos ? Contactez-nous',
   }
 };
 
