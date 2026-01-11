@@ -75,70 +75,6 @@ const fadeUp = {
   viewport: { once: true },
 };
 
-// Mock Layout Component (replace with your actual Layout)
-function Layout({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="min-h-screen flex flex-col">
-      {/* Header */}
-      <header className="bg-white shadow-sm sticky top-0 z-40">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <a href="/" className="text-2xl font-serif font-bold text-gray-900">
-              Ruvubu Hotel
-            </a>
-            <nav className="hidden md:flex items-center gap-6">
-              <a href="/" className="text-gray-600 hover:text-amber-600 transition-colors">Home</a>
-              <a href="/rooms" className="text-gray-600 hover:text-amber-600 transition-colors">Rooms</a>
-              <a href="/gallery" className="text-amber-600 font-medium">Gallery</a>
-              <a href="/contact" className="text-gray-600 hover:text-amber-600 transition-colors">Contact</a>
-            </nav>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="flex-grow">
-        {children}
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-gray-900 text-white py-12">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-xl font-serif font-bold mb-4">Ruvubu Hotel</h3>
-              <p className="text-gray-400 text-sm">
-                Experience comfort and hospitality in the heart of Buhumuza, Cankuzo Province.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Quick Links</h4>
-              <ul className="space-y-2 text-sm">
-                <li><a href="/" className="text-gray-400 hover:text-white transition-colors">Home</a></li>
-                <li><a href="/rooms" className="text-gray-400 hover:text-white transition-colors">Rooms</a></li>
-                <li><a href="/gallery" className="text-gray-400 hover:text-white transition-colors">Gallery</a></li>
-                <li><a href="/contact" className="text-gray-400 hover:text-white transition-colors">Contact</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Contact Info</h4>
-              <ul className="space-y-2 text-sm text-gray-400">
-                <li>Buhumuza, Cankuzo Province</li>
-                <li>Burundi</li>
-                <li>Phone: +257 XX XXX XXX</li>
-                <li>Email: info@ruvubuhotel.com</li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-400">
-            <p>&copy; 2024 Ruvubu Hotel. All rights reserved.</p>
-          </div>
-        </div>
-      </footer>
-    </div>
-  );
-}
-
 export default function Gallery() {
   const [filter, setFilter] = useState<Category>("all");
   const [items, setItems] = useState(galleryItems);
@@ -165,8 +101,7 @@ export default function Gallery() {
   };
 
   return (
-    <Layout>
-      <div className="bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
       {/* Page Header */}
       <section className="bg-white py-10 border-b border-gray-200">
         <div className="container mx-auto px-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
@@ -345,7 +280,6 @@ export default function Gallery() {
           </motion.div>
         )}
       </AnimatePresence>
-      </div>
-    </Layout>
+    </div>
   );
 }
