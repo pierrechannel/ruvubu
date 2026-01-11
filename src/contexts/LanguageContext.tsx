@@ -229,7 +229,7 @@ const translations = {
     'room_image_alt': 'Spacious room',
 
      // Rooms page translations
-    'rooms': 'Rooms',
+    // 'rooms': 'Rooms',
     'your_comfortable_base': 'Your Comfortable Base',
     'loading_rooms': 'Loading rooms...',
     'loading_error': 'Loading Error',
