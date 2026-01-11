@@ -82,7 +82,7 @@ export function GallerySection() {
     try {
       setLoading(true);
       // Fetch gallery images from your API
-      const response = await fetch('https://ruvubu-hotel.com/api/v1/gallery');
+      const response = await fetch('https://ruvubu-hotel.com/api/api/gallery-items');
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
