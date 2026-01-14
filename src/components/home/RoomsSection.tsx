@@ -3,6 +3,7 @@ import { ArrowRight, Users, BedDouble, Square, Star, ArrowDownCircle, Loader2 } 
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 type Room = {
   id: number;
@@ -29,6 +30,7 @@ type ApiResponse = {
 };
 
 export function RoomsSection() {
+  const { t } = useLanguage();
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,7 +47,6 @@ export function RoomsSection() {
       const data: ApiResponse = await response.json();
       
       if (data.success && data.rooms && data.rooms.length > 0) {
-        // Transform data to match our needs
         const transformedRooms: Room[] = data.rooms.map(room => ({
           ...room,
           price: parseFloat(room.price.toString()),
@@ -54,11 +55,11 @@ export function RoomsSection() {
         }));
         setRooms(transformedRooms);
       } else {
-        setError('Aucune chambre disponible pour le moment');
+        setError(t('no_rooms_match'));
       }
     } catch (err) {
       console.error('Error fetching rooms:', err);
-      setError(err instanceof Error ? err.message : 'Échec du chargement des chambres');
+      setError(t('fetch_error'));
     } finally {
       setLoading(false);
     }
@@ -87,11 +88,11 @@ export function RoomsSection() {
 
   const getRoomTypeLabel = (type: string) => {
     const typeMap: Record<string, string> = {
-      'suite': 'Suite',
-      'standard': 'Standard',
-      'family': 'Familiale',
-      'twin': 'Twin',
-      'bungalow': 'Bungalow',
+      'suite': t('suite'),
+      'standard': t('standard_room'),
+      'family': t('family_room'),
+      'twin': t('twin_room'),
+      'bungalow': t('bungalow'),
     };
     return typeMap[type] || type;
   };
@@ -102,6 +103,7 @@ export function RoomsSection() {
         <div className="container mx-auto px-4 text-center">
           <div className="flex justify-center items-center py-20">
             <Loader2 className="w-8 h-8 animate-spin text-accent" />
+            <span className="ml-3">{t('loading_rooms')}</span>
           </div>
         </div>
       </section>
@@ -114,7 +116,7 @@ export function RoomsSection() {
         <div className="container mx-auto px-4 text-center">
           <p className="text-muted-foreground mb-4">{error}</p>
           <Button onClick={fetchRooms} variant="outline">
-            Réessayer
+            {t('retry')}
           </Button>
         </div>
       </section>
@@ -135,13 +137,13 @@ export function RoomsSection() {
           className="text-center mb-12"
         >
           <span className="text-sm font-semibold uppercase tracking-wider text-accent mb-2 block">
-            Hébergement
+            {t('accommodation')}
           </span>
           <h2 className="font-serif text-3xl lg:text-4xl font-bold text-foreground mb-4">
-            Votre Base Confortable
+            {t('your_comfortable_base_home')}
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Hébergement de qualité et confort au cœur de Buhumuza
+            {t('quality_accommodation_comfort')}
           </p>
         </motion.div>
 
@@ -168,7 +170,7 @@ export function RoomsSection() {
                   }}
                 />
                 <div className="absolute top-4 right-4 bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-semibold">
-                  {room.formatted_price}/nuit
+                  {room.formatted_price}{t('per_night')}
                 </div>
               </div>
 
@@ -177,7 +179,7 @@ export function RoomsSection() {
                 <div className="flex items-center gap-3 text-sm text-muted-foreground">
                   <div className="flex items-center gap-1">
                     <Users className="w-4 h-4" />
-                    <span>{room.max_guests} pers.</span>
+                    <span>{room.max_guests} {t('people')}</span>
                   </div>
                   <div className="flex items-center gap-1">
                     <BedDouble className="w-4 h-4" />
@@ -185,7 +187,7 @@ export function RoomsSection() {
                   </div>
                   <div className="flex items-center gap-1">
                     <Square className="w-4 h-4" />
-                    <span>{room.size} m²</span>
+                    <span>{room.size} {t('sqm')}</span>
                   </div>
                 </div>
                 
@@ -195,7 +197,7 @@ export function RoomsSection() {
                 
                 <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
                   {room.description === "undefined" 
-                    ? `Chambre ${getRoomTypeLabel(room.room_type).toLowerCase()} confortable avec toutes les commodités nécessaires pour un séjour mémorable.`
+                    ? `${t('default_room_description')}`
                     : room.description}
                 </p>
                 
@@ -206,13 +208,13 @@ export function RoomsSection() {
                     <span className="font-semibold">{room.rating.toFixed(1)}</span>
                     <span className="text-muted-foreground">/5</span>
                     {room.review_count > 0 && (
-                      <span className="text-muted-foreground ml-1">({room.review_count} avis)</span>
+                      <span className="text-muted-foreground ml-1">({room.review_count} {t('reviews')})</span>
                     )}
                   </div>
                 ) : (
                   <div className="flex items-center gap-1 text-sm text-muted-foreground">
                     <Star className="w-4 h-4" />
-                    <span>Pas encore d'avis</span>
+                    <span>{t('no_reviews_yet')}</span>
                   </div>
                 )}
                 
@@ -220,11 +222,11 @@ export function RoomsSection() {
                 <div className="flex gap-3 pt-2">
                   <Button asChild variant="outline" className="flex-1 group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                     <Link to="/contact">
-                      Réserver <ArrowDownCircle className="w-4 h-4 ml-2" />
+                      {t('book')} <ArrowDownCircle className="w-4 h-4 ml-2" />
                     </Link>
                   </Button>
                   <Button asChild className="flex-1" variant="secondary">
-                    <Link to={`/chambres/${room.slug}`}>Voir détails</Link>
+                    <Link to={`/chambres/${room.slug}`}>{t('view_details')}</Link>
                   </Button>
                 </div>
               </div>
@@ -243,7 +245,7 @@ export function RoomsSection() {
             to="/chambres"
             className="inline-flex items-center gap-2 text-primary font-medium hover:text-accent transition-colors"
           >
-            <span>Découvrir Toutes Nos Chambres</span>
+            <span>{t('discover_all_rooms')}</span>
             <ArrowRight className="w-5 h-5" />
           </Link>
         </motion.div>

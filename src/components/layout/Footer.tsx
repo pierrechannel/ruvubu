@@ -51,8 +51,8 @@ export function Footer() {
                 </p>
                 <p className="flex items-center gap-2 text-sm">
                   <Mail className="w-4 h-4 flex-shrink-0" />
-                  <a href="mailto:ruvubuhotel@gmail.com" className="text-primary-foreground/80 hover:text-accent transition-colors">
-                    ruvubuhotel@gmail.com
+                  <a href="mailto:info@ruvubu-hotel.com" className="text-primary-foreground/80 hover:text-accent transition-colors">
+                    info@ruvubu-hotel.com
                   </a>
                 </p>
                 <p className="flex items-center gap-2 text-sm">

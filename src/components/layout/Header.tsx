@@ -7,9 +7,9 @@ import { useLanguage } from '@/contexts/LanguageContext';
 
 const navigation = [
   { key: 'home', href: '/' },
+   { key: 'about', href: '/a-propos' },
   { key: 'rooms', href: '/chambres' },
   { key: 'dining', href: '/restaurant' },
-  { key: 'about', href: '/a-propos' },
   { key: 'gallery', href: '/galerie' },
   { key: 'contact', href: '/contact' },
 ];
@@ -35,9 +35,9 @@ export function Header() {
               <Phone className="w-4 h-4" />
               <span>+257 69 671 060</span>
             </a>
-            <a href="mailto:ruvubuhotel@gmail.com" className="flex items-center gap-2 hover:text-accent transition-colors">
+            <a href="mailto:info@ruvubu-hotel.com" className="flex items-center gap-2 hover:text-accent transition-colors">
               <Mail className="w-4 h-4" />
-              <span>ruvubuhotel@gmail.com</span>
+              <span>info@ruvubu-hotel.com</span>
             </a>
           </div>
           <div className="flex items-center gap-4">

@@ -233,7 +233,7 @@ export default function Restaurant() {
           <motion.div {...fadeUp} className="grid grid-cols-2 gap-3">
             <div className="rounded-2xl overflow-hidden bg-muted aspect-[4/3]">
               <img
-                src="https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=400&fit=crop"
+                src="assets/images/restaurant/board.jpg"
                 alt="Ruvubu Hotel Restaurant"
                 className="w-full h-full object-cover"
                 loading="lazy"
@@ -241,7 +241,7 @@ export default function Restaurant() {
             </div>
             <div className="rounded-2xl overflow-hidden bg-muted aspect-[4/3]">
               <img
-                src="https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=600&h=400&fit=crop"
+                src="assets/images/restaurant/bottles.jpg"
                 alt="Ruvubu Hotel Bar"
                 className="w-full h-full object-cover"
                 loading="lazy"
@@ -249,7 +249,7 @@ export default function Restaurant() {
             </div>
             <div className="col-span-2 rounded-2xl overflow-hidden bg-muted aspect-[5/2]">
               <img
-                src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=900&h=400&fit=crop"
+                src="assets/images/restaurant/tables.jpg"
                 alt="Ruvubu Hotel Dining Room"
                 className="w-full h-full object-cover"
                 loading="lazy"

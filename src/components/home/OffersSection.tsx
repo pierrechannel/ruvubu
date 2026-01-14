@@ -3,38 +3,41 @@ import { Calendar, Phone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const offers = [
   {
-    badge: 'CIRCUIT CULTUREL',
-    title: 'Circuit Héritage Buhumuza',
-    description: 'Inclut hébergement, visites guidées à Muyaga, Musugi Cendajuru, eaux thermales de Mishiha, et déjeuner avec cuisine locale.',
-    validity: 'Valable toute l\'année',
-    priceInfo: 'Contacter pour les prix',
-    image: 'https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=400&h=300&fit=crop',
+    badgeKey: 'cultural_circuit',
+    titleKey: 'buhumuza_heritage_circuit',
+    descriptionKey: 'heritage_circuit_desc',
+    validityKey: 'valid_all_year',
+    priceInfoKey: 'contact_for_prices',
+    image: '/assets/images/home/muyaga.webp',
     featured: false,
   },
   {
-    badge: 'NATURE & CULTURE',
-    title: 'Combo Parc & Culture',
-    description: 'Combiné safari au Parc de la Ruvubu et sites culturels. Inclut frais de parc, visites guidées, hébergement et tous les repas.',
-    validity: 'Meilleur Mai - Octobre',
-    priceInfo: 'Contacter pour les prix',
-    image: 'https://images.unsplash.com/photo-1516426122078-c23e76319801?w=400&h=300&fit=crop',
+    badgeKey: 'nature_culture',
+    titleKey: 'park_culture_combo',
+    descriptionKey: 'park_culture_combo_desc',
+    validityKey: 'best_may_october',
+    priceInfoKey: 'contact_for_prices',
+    image: '/assets/images/home/ruvubu-tour.webp',
     featured: true,
   },
   {
-    badge: 'ÉVÉNEMENTS',
-    title: 'Forfait Mariage & Événement',
-    description: 'Forfait complet incluant location de salle, restauration professionnelle, hébergement des invités et matériels pour les cérémonie traditionnelle.',
-    validity: 'Réserver 3 mois à l\'avance',
-    priceInfo: 'Devis personnalisé sur demande',
-    image: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=400&h=300&fit=crop',
+    badgeKey: 'events',
+    titleKey: 'wedding_event_package',
+    descriptionKey: 'wedding_event_package_desc',
+    validityKey: 'book_3_months_advance',
+    priceInfoKey: 'custom_quote_on_request',
+    image: '/assets/images/home/mariage.jpg',
     featured: false,
   },
 ];
 
 export function OffersSection() {
+  const { t } = useLanguage();
+
   return (
     <section className="py-20">
       <div className="container mx-auto px-4">
@@ -46,13 +49,13 @@ export function OffersSection() {
           className="text-center mb-12"
         >
           <span className="text-sm font-semibold uppercase tracking-wider text-accent mb-2 block">
-            Offres
+            {t('offers')}
           </span>
           <h2 className="font-serif text-3xl lg:text-4xl font-bold text-foreground mb-4">
-            Forfaits Découverte
+            {t('discovery_packages')}
           </h2>
           <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-            Offres spéciales pour découvrir la région et ses merveilles
+            {t('special_offers_description')}
           </p>
         </motion.div>
 
@@ -60,7 +63,7 @@ export function OffersSection() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {offers.map((offer, index) => (
             <motion.div
-              key={offer.title}
+              key={offer.titleKey}
               initial={{ opacity: 0, scale: 0.95 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
@@ -73,7 +76,7 @@ export function OffersSection() {
               {/* Badge */}
               <div className="absolute top-4 left-4 z-10">
                 <span className="bg-primary text-primary-foreground px-3 py-1 rounded-full text-xs font-semibold">
-                  {offer.badge}
+                  {t(offer.badgeKey)}
                 </span>
               </div>
 
@@ -81,7 +84,7 @@ export function OffersSection() {
               <div className="aspect-[4/3] overflow-hidden relative">
                 <img
                   src={offer.image}
-                  alt={offer.title}
+                  alt={t(offer.titleKey)}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
@@ -90,27 +93,27 @@ export function OffersSection() {
               {/* Content */}
               <div className="p-6">
                 <h3 className="font-serif text-xl font-semibold text-foreground mb-3">
-                  {offer.title}
+                  {t(offer.titleKey)}
                 </h3>
                 <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
-                  {offer.description}
+                  {t(offer.descriptionKey)}
                 </p>
 
                 {/* Details */}
                 <div className="space-y-2 mb-6">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Calendar className="w-4 h-4 text-accent" />
-                    <span>{offer.validity}</span>
+                    <span>{t(offer.validityKey)}</span>
                   </div>
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
                     <Phone className="w-4 h-4 text-accent" />
-                    <span>{offer.priceInfo}</span>
+                    <span>{t(offer.priceInfoKey)}</span>
                   </div>
                 </div>
 
                 <Button asChild className="w-full bg-accent text-accent-foreground hover:bg-accent/90">
                   <Link to="/contact">
-                    {offer.title.includes('Mariage') ? 'Obtenir un Devis' : 'Réserver'}
+                    {offer.titleKey.includes('wedding') ? t('get_quote') : t('reserve')}
                   </Link>
                 </Button>
               </div>

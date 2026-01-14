@@ -22,19 +22,19 @@ const features = [
     title_key: "gastronomy_title",
     description_key: "gastronomy_description",
     icon: UtensilsCrossed,
-    image: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=600&h=400&fit=crop",
+    image: "/assets/images/about/chef.webp",
   },
   {
     title_key: "cultural_experiences_title",
     description_key: "cultural_experiences_description",
     icon: Compass,
-    image: "https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=600&h=400&fit=crop",
+    image: "/assets/images/about/tour.jpg",
   },
   {
     title_key: "burundian_lifestyle_title",
     description_key: "burundian_lifestyle_description",
     icon: Users,
-    image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600&h=400&fit=crop",
+    image: "/assets/images/about/garden.png",
   },
 ];
 
@@ -44,28 +44,28 @@ const heritageSites = [
     title_key: "muyaga_church_title",
     description_key: "muyaga_church_description",
     distance_key: "muyaga_church_distance",
-    image: "https://images.unsplash.com/photo-1505764706515-aa95265c5abc?w=600&h=400&fit=crop",
+    image: "public/assets/images/about/muyaga.webp",
   },
   {
     badge_key: "wellness_badge",
     title_key: "mishiha_hot_springs_title",
     description_key: "mishiha_hot_springs_description",
     distance_key: "mishiha_hot_springs_distance",
-    image: "https://images.unsplash.com/photo-1501004318641-b39e6451bec6?w=600&h=400&fit=crop",
+    image: "public/assets/images/about/eau_thermale.jpg",
   },
   {
     badge_key: "culture_badge",
     title_key: "musugi_cendajuru_title",
     description_key: "musugi_cendajuru_description",
     distance_key: "musugi_cendajuru_distance",
-    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=600&h=400&fit=crop",
+    image: "public/assets/images/about/misugi.jpg",
   },
   {
     badge_key: "adventure_badge",
     title_key: "ruvubu_park_title",
     description_key: "ruvubu_park_description",
     distance_key: "ruvubu_park_distance",
-    image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?w=600&h=400&fit=crop",
+    image: "public/assets/images/about/park.jpg",
   },
 ];
 
@@ -108,7 +108,7 @@ export default function About() {
           <motion.div {...fadeUp} className="relative">
             <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-muted shadow-hotel-lg">
               <img
-                src="https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=900&h=650&fit=crop"
+                src="public/assets/images/about/garden.jpg"
                 alt={t('garden_image_alt')}
                 className="w-full h-full object-cover"
                 loading="lazy"
@@ -116,7 +116,7 @@ export default function About() {
             </div>
             <div className="hidden lg:block absolute -bottom-10 -right-10 w-48 h-36 rounded-xl overflow-hidden shadow-hotel-lg border-4 border-background">
               <img
-                src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=400&h=300&fit=crop"
+                src="public/assets/images/about/room.png"
                 alt={t('room_image_alt')}
                 className="w-full h-full object-cover"
                 loading="lazy"

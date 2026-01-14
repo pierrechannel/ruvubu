@@ -3,6 +3,7 @@ import { Eye, Images, Loader2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useEffect, useState } from 'react';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 type GalleryCategory = {
   id: number;
@@ -53,27 +54,28 @@ type GalleryResponse = {
 const fallbackImages = [
   {
     src: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=300&h=225&fit=crop',
-    alt: 'Chambre spacieuse',
+    altKey: 'spacious_room',
   },
   {
     src: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=300&h=225&fit=crop',
-    alt: 'Restaurant Professionnel',
+    altKey: 'professional_restaurant',
   },
   {
     src: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=300&h=225&fit=crop',
-    alt: 'Jardins Magnifiques',
+    altKey: 'magnificent_gardens',
   },
   {
     src: 'https://images.unsplash.com/photo-1618773928121-c32242e63f39?w=300&h=225&fit=crop',
-    alt: 'Chambre de luxe',
+    altKey: 'luxury_room',
   },
   {
     src: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=300&h=225&fit=crop',
-    alt: 'Expérience Culturelle',
+    altKey: 'cultural_experience',
   },
 ];
 
 export function GallerySection() {
+  const { t } = useLanguage();
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -86,7 +88,6 @@ export function GallerySection() {
   const fetchGalleryImages = async () => {
     try {
       setLoading(true);
-      // Fetch gallery images from your API
       const response = await fetch('https://ruvubu-hotel.com/api/api/gallery-items');
       
       if (!response.ok) {
@@ -96,7 +97,6 @@ export function GallerySection() {
       const data: GalleryResponse = await response.json();
       
       if (data.success && data.data && data.data.length > 0) {
-        // Sort by order field, then by creation date if order is the same
         const sortedItems = [...data.data].sort((a, b) => {
           if (a.order !== b.order) {
             return a.order - b.order;
@@ -106,13 +106,12 @@ export function GallerySection() {
         
         setGalleryItems(sortedItems);
       } else {
-        // If API returns no data, use fallback
         console.warn('No gallery data from API');
         setGalleryItems([]);
       }
     } catch (err) {
       console.error('Error fetching gallery images:', err);
-      setError(err instanceof Error ? err.message : 'Failed to load gallery');
+      setError(err instanceof Error ? err.message : t('gallery_fetch_error'));
       setGalleryItems([]);
     } finally {
       setLoading(false);
@@ -129,7 +128,7 @@ export function GallerySection() {
     : fallbackImages.map((img, index) => ({
         id: index,
         image_url: img.src,
-        title: img.alt,
+        title: t(img.altKey),
         category: { name: 'Default' }
       } as GalleryItem));
 
@@ -164,17 +163,18 @@ export function GallerySection() {
           {loading ? (
             <div className="flex justify-center items-center py-20">
               <Loader2 className="w-8 h-8 animate-spin text-accent" />
+              <span className="ml-3">{t('loading')}</span>
             </div>
           ) : error ? (
             <div className="text-center text-muted-foreground py-4">
-              <p>Chargement de la galerie...</p>
+              <p>{error}</p>
               <Button 
                 onClick={() => fetchGalleryImages()} 
                 variant="outline" 
                 size="sm" 
                 className="mt-2"
               >
-                Réessayer
+                {t('retry')}
               </Button>
             </div>
           ) : (
@@ -196,11 +196,9 @@ export function GallerySection() {
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       loading="lazy"
                       onError={(e) => {
-                        // Fallback to thumbnail if main image fails
                         if (item.thumbnail_url && item.thumbnail_url !== item.image_url) {
                           e.currentTarget.src = item.thumbnail_url;
                         } else {
-                          // Fallback to generic image
                           e.currentTarget.src = fallbackImages[Math.min(index, fallbackImages.length - 1)].src;
                         }
                       }}
@@ -240,7 +238,7 @@ export function GallerySection() {
                 <Button asChild variant="outline" size="lg">
                   <Link to="/galerie" className="inline-flex items-center gap-2">
                     <Images className="w-5 h-5" />
-                    Découvrir Plus de Photos
+                    {t('discover_more_photos')}
                   </Link>
                 </Button>
               </motion.div>
@@ -266,7 +264,7 @@ export function GallerySection() {
               exit={{ opacity: 0, y: -20 }}
               onClick={handleCloseLightbox}
               className="absolute top-4 right-4 md:top-8 md:right-8 w-10 h-10 bg-white/10 hover:bg-white/20 rounded-full flex items-center justify-center text-white text-2xl transition-colors z-10"
-              aria-label="Close"
+              aria-label={t('close')}
             >
               <X className="w-6 h-6" />
             </motion.button>
@@ -298,7 +296,7 @@ export function GallerySection() {
 
             {/* Navigation instructions */}
             <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-white/70 text-sm">
-              Cliquez à l'extérieur de l'image ou appuyez sur Échap pour fermer
+              {t('click_outside_or_esc')}
             </div>
           </motion.div>
         )}
