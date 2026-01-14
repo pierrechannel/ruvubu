@@ -329,9 +329,9 @@ export default function Restaurant() {
                         }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                      <div className="absolute top-2 left-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">
+                      {/* <div className="absolute top-2 left-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground"> */}
                         {/* {formatPrice(item.price)} */}
-                      </div>
+                      {/* </div> */}
                       {item.tag && (
                         <div className="absolute top-2 right-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary text-primary-foreground">
                           {item.tag}
