@@ -158,7 +158,7 @@ export function GallerySection() {
 
   return (
     <>
-      <section className="py-20">
+      <section className="py-20 px-6 md:px-8 lg:px-12">
         <div className="container mx-auto px-4">
           {loading ? (
             <div className="flex justify-center items-center py-20">

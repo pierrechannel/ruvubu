@@ -188,7 +188,7 @@ export default function Gallery() {
       <Layout>
         <div className="min-h-screen bg-gray-50">
           {/* Page Header */}
-          <section className="bg-white py-10 border-b border-gray-200">
+          <section className="bg-white px-6 md:px-8 lg:px-12 py-10 border-b border-gray-200">
             <div className="container mx-auto px-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div>
                 <p className="text-xs uppercase tracking-widest text-amber-600 font-semibold mb-2">
@@ -209,7 +209,7 @@ export default function Gallery() {
           </section>
 
           {/* Gallery Content */}
-          <section className="py-16">
+          <section className="py-16 px-6 md:px-8 lg:px-12">
             <div className="container mx-auto px-4 space-y-10">
               {/* Filters */}
               {categoriesLoading ? (

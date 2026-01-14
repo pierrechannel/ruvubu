@@ -2,7 +2,7 @@ import { Layout } from "@/components/layout/Layout";
 import { Button } from "@/components/ui/button";
 import { BadgeCheck, Compass, MapPin, UtensilsCrossed, Users, Sparkles, HeartHandshake } from "lucide-react";
 import { motion } from "framer-motion";
-import { useLanguage } from "@/contexts/LanguageContext"; // Import the language hook
+import { useLanguage } from "@/contexts/LanguageContext";
 
 const milestones = [
   {
@@ -82,7 +82,7 @@ export default function About() {
     <Layout>
       {/* Page title / breadcrumb */}
       <section className="bg-secondary/30 py-10 border-b border-border/60">
-        <div className="container mx-auto px-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <div className="container mx-auto px-6 md:px-8 lg:px-12 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.18em] text-accent font-semibold mb-2">
               {t('about_us')}
@@ -103,7 +103,7 @@ export default function About() {
 
       {/* About section */}
       <section className="py-16">
-        <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
+        <div className="container mx-auto px-6 md:px-8 lg:px-12 grid lg:grid-cols-2 gap-12 items-center">
           {/* Images stack */}
           <motion.div {...fadeUp} className="relative">
             <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-muted shadow-hotel-lg">
@@ -190,7 +190,7 @@ export default function About() {
 
       {/* Features */}
       <section className="py-16 bg-secondary/30">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-6 md:px-8 lg:px-12">
           <motion.div {...fadeUp} className="text-center mb-10">
             <p className="text-sm uppercase tracking-[0.18em] text-accent font-semibold mb-2">
               {t('excellence')}
@@ -238,7 +238,7 @@ export default function About() {
 
       {/* Heritage grid */}
       <section className="py-16">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-6 md:px-8 lg:px-12">
           <motion.div {...fadeUp} className="text-center mb-10">
             <p className="text-sm uppercase tracking-[0.18em] text-accent font-semibold mb-2">
               {t('discover')}

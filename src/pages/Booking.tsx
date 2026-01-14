@@ -181,7 +181,7 @@ export default function Booking() {
   return (
     <Layout>
       {/* Page header */}
-      <section className="bg-secondary/30 py-10 border-b border-border/60">
+      <section className="bg-secondary/30 px-6 md:px-8 lg:px-12 py-10 border-b border-border/60">
         <div className="container mx-auto px-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.18em] text-accent font-semibold mb-2">
@@ -206,7 +206,7 @@ export default function Booking() {
       </section>
 
       {/* Main booking content */}
-      <section className="py-12">
+      <section className="py-12 px-6 md:px-8 lg:px-12">
         <div className="container mx-auto px-4">
           {/* Progress steps */}
           <div className="mb-12">

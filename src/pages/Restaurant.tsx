@@ -179,7 +179,7 @@ export default function Restaurant() {
   return (
     <Layout>
       {/* Page title / breadcrumb */}
-      <section className="bg-secondary/30 py-10 border-b border-border/60">
+      <section className="bg-secondary/30 py-10 px-6 md:px-8 lg:px-12 border-b border-border/60">
         <div className="container mx-auto px-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.18em] text-accent font-semibold mb-2">
@@ -200,7 +200,7 @@ export default function Restaurant() {
       </section>
 
       {/* Intro + images */}
-      <section className="py-16">
+      <section className="py-16 px-6 md:px-8 lg:px-12">
         <div className="container mx-auto px-4 grid lg:grid-cols-2 gap-12 items-center">
           <motion.div {...fadeUp} className="space-y-5">
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground">
@@ -260,7 +260,7 @@ export default function Restaurant() {
       </section>
 
       {/* Menu section */}
-      <section className="py-16 bg-secondary/30">
+      <section className="py-16 px-6 md:px-8 lg:px-12 bg-secondary/30">
         <div className="container mx-auto px-4 space-y-10">
           <motion.div {...fadeUp} className="text-center space-y-2">
             <h3 className="font-serif text-3xl font-bold text-foreground">
@@ -316,9 +316,9 @@ export default function Restaurant() {
                     whileInView={{ opacity: 1, scale: 1 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.35, delay: idx * 0.05 }}
-                    className="bg-card border border-border rounded-2xl overflow-hidden shadow-hotel-sm hover:shadow-hotel-lg transition-all duration-300"
+                    className="bg-card border border-border rounded-xl overflow-hidden shadow-hotel-sm hover:shadow-hotel-lg transition-all duration-300"
                   >
-                    <div className="relative aspect-[4/3] overflow-hidden">
+                    <div className="relative aspect-[16/10] overflow-hidden">
                       <img
                         src={getImageUrl(item.image)}
                         alt={item.name}
@@ -329,26 +329,26 @@ export default function Restaurant() {
                         }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                      <div className="absolute top-3 left-3 px-3 py-1 rounded-full text-xs font-semibold bg-accent text-accent-foreground">
-                        {formatPrice(item.price)}
+                      <div className="absolute top-2 left-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-accent text-accent-foreground">
+                        {/* {formatPrice(item.price)} */}
                       </div>
                       {item.tag && (
-                        <div className="absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-semibold bg-primary text-primary-foreground">
+                        <div className="absolute top-2 right-2 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-primary text-primary-foreground">
                           {item.tag}
                         </div>
                       )}
                     </div>
-                    <div className="p-5 space-y-2">
-                      <h4 className="font-serif text-xl font-semibold text-foreground">{item.name}</h4>
-                      <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                    <div className="p-3.5 space-y-1.5">
+                      <h4 className="font-serif text-lg font-semibold text-foreground">{item.name}</h4>
+                      <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
                         {item.description === "undefined" ? t('cuisine_quote') : item.description}
                       </p>
-                      <div className="flex items-center justify-between pt-2">
-                        <span className="text-xs px-2 py-1 rounded-full bg-secondary text-secondary-foreground">
+                      <div className="flex items-center justify-between pt-1.5">
+                        <span className="text-xs px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground">
                           {t(item.category) || item.category}
                         </span>
                         {item.is_special && (
-                          <span className="text-xs px-2 py-1 rounded-full bg-yellow-100 text-yellow-800">
+                          <span className="text-xs px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-800">
                             {t('special')}
                           </span>
                         )}

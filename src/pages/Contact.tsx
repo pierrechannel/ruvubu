@@ -105,7 +105,7 @@ export default function Contact() {
   return (
     <Layout>
       {/* Page title / breadcrumb */}
-      <section className="bg-secondary/30 py-10 border-b border-border/60">
+      <section className="bg-secondary/30 py-10 px-6 md:px-8 lg:px-12 border-b border-border/60">
         <div className="container mx-auto px-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div>
             <p className="text-xs uppercase tracking-[0.18em] text-accent font-semibold mb-2">
@@ -125,7 +125,7 @@ export default function Contact() {
         </div>
       </section>
 
-      <section className="py-16">
+      <section className="py-16 px-6 md:px-8 lg:px-12">
         <div className="container mx-auto px-4 space-y-12">
           {/* Heading */}
           <motion.div {...fadeUp} className="text-center max-w-3xl mx-auto space-y-3">

@@ -217,7 +217,7 @@ export default function RoomDetails() {
   return (
     <Layout>
       {/* Page header */}
-      <section className="bg-secondary/30 py-10 border-b border-border/60">
+      <section className="bg-secondary/30 py-10 px-6 md:px-8 lg:px-12 border-b border-border/60">
         <div className="container mx-auto px-4">
           <nav className="text-sm text-muted-foreground mb-3 flex items-center gap-2">
             <Link to="/" className="hover:text-primary transition-colors">Accueil</Link>
@@ -250,17 +250,17 @@ export default function RoomDetails() {
                 )}
               </div>
             </div>
-            <div className="text-right">
+            {/* <div className="text-right">
               <p className="text-muted-foreground text-sm">À partir de</p>
               <p className="text-primary text-xl font-semibold">{room.formatted_price}</p>
               <p className="text-xs text-muted-foreground">Par nuit</p>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>
 
       {/* Content */}
-      <section className="py-14">
+      <section className="py-14 px-6 md:px-8 lg:px-12">
         <div className="container mx-auto px-4 grid lg:grid-cols-3 gap-10">
           {/* Left column */}
           <div className="lg:col-span-2 space-y-8">
@@ -436,9 +436,9 @@ export default function RoomDetails() {
                       ))}
                     </select>
                   </div>
-                  <div className="rounded-lg border border-border bg-secondary/40 p-3 text-sm text-muted-foreground">
-                    Prix: <strong className="text-foreground">{room.formatted_price}</strong> par nuit
-                  </div>
+                  {/* <div className="rounded-lg border border-border bg-secondary/40 p-3 text-sm text-muted-foreground"> */}
+                    {/* Prix: <strong className="text-foreground">{room.formatted_price}</strong> par nuit */}
+                  {/* </div> */}
                 </div>
                 <Button asChild className="w-full">
                   <Link to="/contact">

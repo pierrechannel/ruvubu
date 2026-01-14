@@ -127,7 +127,7 @@ export function RoomsSection() {
   const displayRooms = rooms.slice(0, 3);
 
   return (
-    <section className="py-20">
+    <section className="py-20 px-6 md:px-8 lg:px-12">
       <div className="container mx-auto px-4">
         {/* Section title */}
         <motion.div
@@ -170,7 +170,7 @@ export function RoomsSection() {
                   }}
                 />
                 <div className="absolute top-4 right-4 bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-semibold">
-                  {room.formatted_price}{t('per_night')}
+                  {/* {room.formatted_price}{t('per_night')} */}
                 </div>
               </div>
 

@@ -9,7 +9,7 @@ export function HeroSection() {
 
   return (
     <section className="relative py-16 lg:py-24 overflow-hidden">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-6 md:px-8 lg:px-12">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Content */}
           <motion.div

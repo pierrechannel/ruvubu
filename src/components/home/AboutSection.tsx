@@ -7,7 +7,7 @@ export function AboutSection() {
   const { t } = useLanguage();
 
   return (
-    <section className="py-20 bg-secondary/30">
+    <section className="py-20 px-6 md:px-8 lg:px-12 bg-secondary/30">
       <div className="container mx-auto px-4">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Content */}
