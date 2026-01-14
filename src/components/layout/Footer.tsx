@@ -147,7 +147,7 @@ export function Footer() {
                 </div>
                 <div className="text-sm text-primary-foreground/60 flex items-center justify-center lg:justify-start gap-1">
                   Conçu avec <Heart className="w-4 h-4 text-red-500 fill-red-500" /> par{' '}
-                  <a href="https://npcode.com" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">
+                  <a href="https://www.linkedin.com/in/nsengiyumva-pierre-channel-596903282/" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">
                     NpCode
                   </a>
                 </div>
