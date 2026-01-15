@@ -304,9 +304,9 @@ export default function Rooms() {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       loading="lazy"
                     />
-                    <div className="absolute top-4 right-4 bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-semibold">
+                    {/* <div className="absolute top-4 right-4 bg-accent text-accent-foreground px-3 py-1 rounded-full text-sm font-semibold"> */}
                       {/* {formatPrice(room.price)} */}
-                    </div>
+                    {/* </div> */}
                   </div>
                   <div className="p-6 space-y-3">
                     <div className="flex items-center gap-3 text-sm text-muted-foreground">
