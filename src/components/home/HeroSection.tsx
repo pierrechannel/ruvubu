@@ -2,11 +2,14 @@ import { Link } from 'react-router-dom';
 import { Wifi, UtensilsCrossed, Flower2, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 export function HeroSection() {
+  const { t } = useLanguage();
+
   return (
     <section className="relative py-16 lg:py-24 overflow-hidden">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto px-6 md:px-8 lg:px-12">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Content */}
           <motion.div
@@ -15,11 +18,10 @@ export function HeroSection() {
             transition={{ duration: 0.6 }}
           >
             <h2 className="font-serif text-4xl lg:text-5xl xl:text-6xl font-bold text-foreground leading-tight mb-6">
-              Hôtel Ruvubu, Votre Havre de Paix à Buhumuza
+              {t('hero_main_title')}
             </h2>
             <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-              Découvrez l'hospitalité burundaise à l'Hôtel Ruvubu : chambres spacieuses, 
-              cuisine raffinée et service exceptionnel au cœur de Buhumuza.
+              {t('hero_main_description')}
             </p>
 
             {/* Features */}
@@ -28,29 +30,29 @@ export function HeroSection() {
                 <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center">
                   <Wifi className="w-5 h-5 text-primary" />
                 </div>
-                <span className="font-medium">WiFi Gratuit</span>
+                <span className="font-medium">{t('free_wifi')}</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center">
                   <UtensilsCrossed className="w-5 h-5 text-primary" />
                 </div>
-                <span className="font-medium">Restaurant</span>
+                <span className="font-medium">{t('restaurant')}</span>
               </div>
               <div className="flex items-center gap-2 text-sm">
                 <div className="w-10 h-10 bg-secondary rounded-lg flex items-center justify-center">
                   <Flower2 className="w-5 h-5 text-primary" />
                 </div>
-                <span className="font-medium">Jardins</span>
+                <span className="font-medium">{t('gardens')}</span>
               </div>
             </div>
 
             {/* Buttons */}
             <div className="flex flex-wrap gap-4">
               <Button asChild size="lg" className="bg-primary hover:bg-primary/90">
-                <Link to="/contact">Réserver Maintenant</Link>
+                <Link to="/contact">{t('book_now_hero')}</Link>
               </Button>
               <Button asChild variant="outline" size="lg">
-                <Link to="/chambres">Découvrir Nos Chambres</Link>
+                <Link to="/chambres">{t('discover_our_rooms')}</Link>
               </Button>
             </div>
           </motion.div>
@@ -64,8 +66,8 @@ export function HeroSection() {
           >
             <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-secondary">
               <img
-                src="https://images.unsplash.com/photo-1566073771259-6a8506099945?w=800&h=600&fit=crop"
-                alt="Hôtel Ruvubu - Vue extérieure"
+                src="/assets/images/home/garden.jpg"
+                alt={t('hotel_ruvubu')}
                 className="w-full h-full object-cover"
               />
             </div>
@@ -82,14 +84,14 @@ export function HeroSection() {
                   <Star key={i} className="w-4 h-4 fill-accent text-accent" />
                 ))}
               </div>
-              <h6 className="font-semibold text-sm mb-2">Service Exceptionnel</h6>
+              <h6 className="font-semibold text-sm mb-2">{t('exceptional_service')}</h6>
               <p className="text-xs text-muted-foreground mb-3">
-                "Un accueil chaleureux et un service impeccable. L'Hôtel Ruvubu incarne véritablement l'esprit de Buhumuza."
+                {t('warm_welcome_service')}
               </p>
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-secondary rounded-full overflow-hidden">
                   <img
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=80&h=80&fit=crop"
+                    src="/assets/images/home/person_1.jpg"
                     alt="Marie K."
                     className="w-full h-full object-cover"
                   />
@@ -109,15 +111,15 @@ export function HeroSection() {
         >
           <div>
             <span className="block font-serif text-4xl lg:text-5xl font-bold text-primary">20</span>
-            <span className="text-sm text-muted-foreground">Chambres Confortables</span>
+            <span className="text-sm text-muted-foreground">{t('comfortable_rooms')}</span>
           </div>
           <div>
             <span className="block font-serif text-4xl lg:text-5xl font-bold text-primary">25</span>
-            <span className="text-sm text-muted-foreground">Km du Parc National</span>
+            <span className="text-sm text-muted-foreground">{t('km_from_national_park')}</span>
           </div>
           <div className="col-span-2 md:col-span-1">
             <span className="block font-serif text-4xl lg:text-5xl font-bold text-primary">4</span>
-            <span className="text-sm text-muted-foreground">Sites Touristiques</span>
+            <span className="text-sm text-muted-foreground">{t('tourist_sites')}</span>
           </div>
         </motion.div>
       </div>

@@ -1,54 +1,57 @@
 import { UtensilsCrossed, Flower2, Mic, Compass, Wine, Heart, CheckCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useLanguage } from '@/contexts/LanguageContext';
 
 const amenities = [
   {
     icon: UtensilsCrossed,
-    title: 'Restaurant Professionnel',
-    description: 'Goûtez aux véritables spécialités burundaises et les saveurs de notre carte internationale, préparées avec des produits frais et locaux.',
-    features: ['Chefs Qualifiés', 'Spécialités Locales'],
-    image: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400&h=300&fit=crop',
+    titleKey: 'professional_restaurant',
+    descriptionKey: 'professional_restaurant_desc',
+    featuresKeys: ['qualified_chefs', 'local_specialties'],
+    image: '/assets/images/home/chef.webp',
   },
   {
     icon: Flower2,
-    title: 'Jardins Magnifiques',
-    description: 'Évadez-vous dans nos jardins paysagers et savourez nos délicieuses limonades dans un cadre verdoyant et apaisant.',
-    features: ['Espaces Verts', 'Zones de Détente'],
-    image: 'https://images.unsplash.com/photo-1585320806297-9794b3e4eeae?w=400&h=300&fit=crop',
+    titleKey: 'magnificent_gardens',
+    descriptionKey: 'magnificent_gardens_desc',
+    featuresKeys: ['green_spaces', 'relaxation_areas'],
+    image: '/assets/images/home/garden.jpg',
   },
   {
     icon: Mic,
-    title: "Salles d'Événements",
-    description: "Conférences, mariages et événements sur mesure avec l'accompagnement de notre équipe professionnelle.",
-    features: ['Salle de Mariage', 'Salles de Conférence'],
-    image: 'https://images.unsplash.com/photo-1519167758481-83f550bb49b3?w=400&h=300&fit=crop',
+    titleKey: 'event_halls',
+    descriptionKey: 'event_halls_desc',
+    featuresKeys: ['wedding_hall', 'conference_rooms'],
+    image: '/assets/images/home/salle.jpg',
   },
   {
     icon: Compass,
-    title: 'Services Touristiques',
-    description: 'Découvrez la région avec nos guides experts : sites historiques, merveilles naturelles comme la réserve naturelle de la Ruvubu.',
-    features: ['Circuits Culturels', 'Excursions Nature'],
-    image: 'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?w=400&h=300&fit=crop',
+    titleKey: 'tourist_services',
+    descriptionKey: 'tourist_services_desc',
+    featuresKeys: ['cultural_circuits', 'nature_excursions'],
+    image: '/assets/images/home/tourisme.jpg',
   },
   {
     icon: Wine,
-    title: 'Bar Moderne',
-    description: 'Savourez nos limonades artisanales, boissons locales et cocktails dans notre bar à l\'atmosphère conviviale.',
-    features: ['Boissons Premium', 'Ambiance Moderne'],
-    image: 'https://images.unsplash.com/photo-1470337458703-46ad1756a187?w=400&h=300&fit=crop',
+    titleKey: 'modern_bar',
+    descriptionKey: 'modern_bar_desc',
+    featuresKeys: ['premium_drinks', 'modern_ambiance'],
+    image: '/assets/images/home/bottles.jpg',
   },
   {
     icon: Heart,
-    title: 'Hospitalité Chaleureuse',
-    description: "Découvrez l'hospitalité légendaire de Buhumuza à travers notre équipe dévouée à votre confort et à un séjour inoubliable.",
-    features: ['Service 24/7', 'Accueil Chaleureux'],
-    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=300&fit=crop',
+    titleKey: 'warm_hospitality',
+    descriptionKey: 'warm_hospitality_desc',
+    featuresKeys: ['service_24_7', 'warm_welcome'],
+    image: '/assets/images/home/room.png',
   },
 ];
 
 export function AmenitiesSection() {
+  const { t } = useLanguage();
+
   return (
-    <section className="py-20 bg-secondary/30">
+    <section className="py-20 px-6 md:px-8 lg:px-12 bg-secondary/30">
       <div className="container mx-auto px-4">
         {/* Section title */}
         <motion.div
@@ -58,10 +61,10 @@ export function AmenitiesSection() {
           className="text-center mb-12"
         >
           <span className="text-sm font-semibold uppercase tracking-wider text-accent mb-2 block">
-            Services
+            {t('services')}
           </span>
           <h2 className="font-serif text-3xl lg:text-4xl font-bold text-foreground mb-4">
-            Nos Installations Premium
+            {t('our_premium_facilities')}
           </h2>
         </motion.div>
 
@@ -69,7 +72,7 @@ export function AmenitiesSection() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {amenities.map((amenity, index) => (
             <motion.div
-              key={amenity.title}
+              key={amenity.titleKey}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -80,7 +83,7 @@ export function AmenitiesSection() {
               <div className="aspect-[4/3] overflow-hidden relative">
                 <img
                   src={amenity.image}
-                  alt={amenity.title}
+                  alt={t(amenity.titleKey)}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -92,21 +95,21 @@ export function AmenitiesSection() {
               {/* Content */}
               <div className="p-6">
                 <h4 className="font-serif text-xl font-semibold text-foreground mb-2">
-                  {amenity.title}
+                  {t(amenity.titleKey)}
                 </h4>
                 <p className="text-muted-foreground text-sm mb-4 line-clamp-3">
-                  {amenity.description}
+                  {t(amenity.descriptionKey)}
                 </p>
 
                 {/* Features */}
                 <div className="flex flex-wrap gap-3">
-                  {amenity.features.map((feature) => (
+                  {amenity.featuresKeys.map((featureKey) => (
                     <span
-                      key={feature}
+                      key={featureKey}
                       className="inline-flex items-center gap-1 text-xs text-primary"
                     >
                       <CheckCircle className="w-3 h-3" />
-                      {feature}
+                      {t(featureKey)}
                     </span>
                   ))}
                 </div>
