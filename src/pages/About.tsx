@@ -44,28 +44,28 @@ const heritageSites = [
     title_key: "muyaga_church_title",
     description_key: "muyaga_church_description",
     distance_key: "muyaga_church_distance",
-    image: "public/assets/images/about/muyaga.webp",
+    image: "/assets/images/about/muyaga.webp",
   },
   {
     badge_key: "wellness_badge",
     title_key: "mishiha_hot_springs_title",
     description_key: "mishiha_hot_springs_description",
     distance_key: "mishiha_hot_springs_distance",
-    image: "public/assets/images/about/eau_thermale.jpg",
+    image: "/assets/images/about/eau_thermale.jpg",
   },
   {
     badge_key: "culture_badge",
     title_key: "musugi_cendajuru_title",
     description_key: "musugi_cendajuru_description",
     distance_key: "musugi_cendajuru_distance",
-    image: "public/assets/images/about/misugi.jpg",
+    image: "/assets/images/about/misugi.jpg",
   },
   {
     badge_key: "adventure_badge",
     title_key: "ruvubu_park_title",
     description_key: "ruvubu_park_description",
     distance_key: "ruvubu_park_distance",
-    image: "public/assets/images/about/park.jpg",
+    image: "/assets/images/about/park.jpg",
   },
 ];
 
@@ -108,7 +108,7 @@ export default function About() {
           <motion.div {...fadeUp} className="relative">
             <div className="aspect-[4/3] rounded-2xl overflow-hidden bg-muted shadow-hotel-lg">
               <img
-                src="public/assets/images/about/garden.jpg"
+                src="/assets/images/about/garden.jpg"
                 alt={t('garden_image_alt')}
                 className="w-full h-full object-cover"
                 loading="lazy"
@@ -116,7 +116,7 @@ export default function About() {
             </div>
             <div className="hidden lg:block absolute -bottom-10 -right-10 w-48 h-36 rounded-xl overflow-hidden shadow-hotel-lg border-4 border-background">
               <img
-                src="public/assets/images/about/room.png"
+                src="/assets/images/about/room.png"
                 alt={t('room_image_alt')}
                 className="w-full h-full object-cover"
                 loading="lazy"
